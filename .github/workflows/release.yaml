@@ -27,7 +27,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BUMP_LEVEL: ${{ inputs.level }}
-  set-new-version:
+  bump-new-version:
     runs-on: ubuntu-latest
     needs: get-current-version
     permissions: {}
@@ -35,6 +35,8 @@ jobs:
       - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
         with:
           aqua_version: v2.8.0
+        env:
+          AQUA_GITHUB_TOKEN: ${{github.token}}
       - run: |
           semver --version
           semver bump $BUMP_LEVEL $current_version
