@@ -1,0 +1,24 @@
+---
+name: test
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - labeled
+permissions: {}
+jobs:
+  create-release-draft:
+    runs-on: ubuntu-latest
+    permissions: {}
+    if: |
+      github.triggering_actor == 'murn0' && startsWith(github.event.label.name, 'release')
+    steps:
+      - name: Bump version
+        run: |
+          git fetch --tag
+          CURRENT_VERSION="$(git tag --sort=-v:refname | head -1)"
+          if [[ "${CURRENT_VERSION}" == "" ]]; then
+            CURRENT_VERSION="v0.0.0"
+          fi
+          echo CURRENT_VERSION
