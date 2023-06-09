@@ -43,6 +43,7 @@ jobs:
         env:
           BUMP_LEVEL: ${{inputs.level}}
           current_version: ${{needs.get-current-version.outputs.current_version}}
+          AQUA_GITHUB_TOKEN: ${{github.token}}
   # create-release-pull-request:
   #   runs-on: ubuntu-latest
   #   permissions: {}
