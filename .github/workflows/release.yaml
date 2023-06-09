@@ -19,14 +19,15 @@ jobs:
     permissions: {}
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
+        with:
+          aqua_version: v2.8.0
+      - run: semver --version
       - run: |
-          CURRENT_VERSION="$(gh release list --exclude-drafts --exclude-pre-releases)"
-          if [[ "${CURRENT_VERSION}" == "" ]]; then
-            CURRENT_VERSION="v0.0.0"
-          fi
-          echo $CURRENT_VERSION
+          bash scripts/get-current-version.sh BUMP_LEVEL
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BUMP_LEVEL: ${{ inputs.level }}
   # create-release-pull-request:
   #   runs-on: ubuntu-latest
   #   permissions: {}

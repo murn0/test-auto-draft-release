@@ -1,0 +1,8 @@
+---
+# aqua - Declarative CLI Version Manager
+# https://aquaproj.github.io/
+registries:
+- type: standard
+  ref: v4.15.0 # renovate: depName=aquaproj/aqua-registry
+packages:
+- name: fsaintjacques/semver-tool@3.4.0
