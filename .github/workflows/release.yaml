@@ -1,0 +1,37 @@
+---
+name: Create release pull pull_request
+on:
+  workflow_dispatch:
+    inputs:
+      level:
+        default: "minor"
+        required: false
+        type: choice
+        options:
+          - "major"
+          - "minor"
+          - "patch"
+        description: "bump to [major|minor|patch]"
+permissions: {}
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - run: |
+          CURRENT_VERSION="$(gh release list --exclude-drafts --exclude-pre-releases)"
+          if [[ "${CURRENT_VERSION}" == "" ]]; then
+            CURRENT_VERSION="v0.0.0"
+          fi
+          echo $CURRENT_VERSION
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # create-release-pull-request:
+  #   runs-on: ubuntu-latest
+  #   permissions: {}
+  #   steps:
+  #     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+  #     - run: |
+  #         gh pr create
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
