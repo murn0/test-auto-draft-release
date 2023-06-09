@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions: {}
     steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
       - run: |
           CURRENT_VERSION="$(gh release list --exclude-drafts --exclude-pre-releases)"
           if [[ "${CURRENT_VERSION}" == "" ]]; then
