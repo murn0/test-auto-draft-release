@@ -9,4 +9,4 @@ if [[ "${CURRENT_VERSION}" == "" ]]; then
     CURRENT_VERSION="v0.0.0"
 fi
 echo $CURRENT_VERSION
-semver bump $1 $CURRENT_VERSION
+semver bump $BUMP_LEVEL $CURRENT_VERSION
