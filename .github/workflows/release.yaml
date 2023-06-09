@@ -24,6 +24,7 @@ jobs:
         id: current
       - run: |
           bash scripts/get-current-version.sh
+          ls -la
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BUMP_LEVEL: ${{ inputs.level }}
