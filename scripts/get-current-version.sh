@@ -2,7 +2,6 @@
 
 set -eu
 
-BUMP_LEVEL=$1
 CURRENT_VERSION="$(gh release list --limit 1 --exclude-drafts --exclude-pre-releases)"
 
 if [[ -z "${CURRENT_VERSION}" ]]; then
