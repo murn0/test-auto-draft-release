@@ -14,35 +14,45 @@ on:
         description: "bump to [major|minor|patch]"
 permissions: {}
 jobs:
-  get-current-version:
-    outputs:
-      current_version: ${{steps.current.outputs.current_version}}
+  bump-version:
     runs-on: ubuntu-latest
     permissions: {}
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
-        id: current
-      - run: |
-          bash scripts/get-current-version.sh
-          ls -la
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BUMP_LEVEL: ${{ inputs.level }}
-  bump-new-version:
-    runs-on: ubuntu-latest
-    needs: get-current-version
-    permissions: {}
-    steps:
       - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
         with:
           aqua_version: v2.8.0
-        env:
-          AQUA_GITHUB_TOKEN: ${{github.token}}
-      - run: ls -la
-        env:
-          BUMP_LEVEL: ${{inputs.level}}
-          current_version: ${{needs.get-current-version.outputs.current_version}}
-          AQUA_GITHUB_TOKEN: ${{github.token}}
+      - run: |
+          svu current
+  # get-current-version:
+  #   outputs:
+  #     current_version: ${{steps.current.outputs.current_version}}
+  #   runs-on: ubuntu-latest
+  #   permissions: {}
+  #   steps:
+  #     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+  #       id: current
+  #     - run: |
+  #         bash scripts/get-current-version.sh
+  #         ls -la
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         BUMP_LEVEL: ${{ inputs.level }}
+  # bump-new-version:
+  #   runs-on: ubuntu-latest
+  #   needs: get-current-version
+  #   permissions: {}
+  #   steps:
+  #     - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
+  #       with:
+  #         aqua_version: v2.8.0
+  #       env:
+  #         AQUA_GITHUB_TOKEN: ${{github.token}}
+  #     - run: ls -la
+  #       env:
+  #         BUMP_LEVEL: ${{inputs.level}}
+  #         current_version: ${{needs.get-current-version.outputs.current_version}}
+  #         AQUA_GITHUB_TOKEN: ${{github.token}}
   # create-release-pull-request:
   #   runs-on: ubuntu-latest
   #   permissions: {}
