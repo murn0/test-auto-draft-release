@@ -23,7 +23,9 @@ jobs:
         with:
           aqua_version: v2.8.0
       - run: |
-          svu current
+          svu $BUMP_LEVEL
+        env:
+          BUMP_LEVEL: ${{ inputs.level }}
   # get-current-version:
   #   outputs:
   #     current_version: ${{steps.current.outputs.current_version}}
