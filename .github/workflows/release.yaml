@@ -14,18 +14,29 @@ on:
         description: "bump to [major|minor|patch]"
 permissions: {}
 jobs:
-  bump-version:
+  build-changelog:
     runs-on: ubuntu-latest
-    permissions: {}
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
-      - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
-        with:
-          aqua_version: v2.8.0
-      - run: |
-          svu $BUMP_VERSION
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v3
         env:
-          BUMP_VERSION: ${{ inputs.version }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          echo ${{steps.github_release.outputs.changelog}}
+          echo ${{steps.github_release.outputs.pull_requests}}
+  # bump-version:
+  #   runs-on: ubuntu-latest
+  #   permissions: {}
+  #   steps:
+  #     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+  #     - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
+  #       with:
+  #         aqua_version: v2.8.0
+  #     - run: |
+  #         svu $BUMP_VERSION
+  #       env:
+  #         BUMP_VERSION: ${{ inputs.version }}
   # get-current-version:
   #   outputs:
   #     current_version: ${{steps.current.outputs.current_version}}
