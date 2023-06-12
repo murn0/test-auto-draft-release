@@ -3,7 +3,7 @@ name: Create release pull pull_request
 on:
   workflow_dispatch:
     inputs:
-      level:
+      version:
         default: "minor"
         required: false
         type: choice
@@ -23,9 +23,10 @@ jobs:
         with:
           aqua_version: v2.8.0
       - run: |
-          svu $BUMP_LEVEL
+          svu $BUMP_VERSION
+          git log $(git tag --sort version:refname | tail -n 2 | head -n 1)..$(git tag --sort version:refname | tail -n 1) --merges --reverse --pretty=format:"* %b"
         env:
-          BUMP_LEVEL: ${{ inputs.level }}
+          BUMP_VERSION: ${{ inputs.version }}
   # get-current-version:
   #   outputs:
   #     current_version: ${{steps.current.outputs.current_version}}
