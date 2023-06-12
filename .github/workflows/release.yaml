@@ -26,7 +26,6 @@ jobs:
           svu $BUMP_VERSION
         env:
           BUMP_VERSION: ${{ inputs.version }}
-      - uses: yanamura/git-merge-diff@v1
   # get-current-version:
   #   outputs:
   #     current_version: ${{steps.current.outputs.current_version}}
