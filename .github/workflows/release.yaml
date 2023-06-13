@@ -24,7 +24,7 @@ jobs:
         with:
           aqua_version: v2.8.0
       - run: |
-          git log -1 --format=%aI ${{github.sha}}
+          git log -1 --format=%aI
           git log -1 --format=%aI $(svu current)
   # build-changelog:
   #   runs-on: ubuntu-latest
