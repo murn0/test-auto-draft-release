@@ -27,7 +27,13 @@ jobs:
         id: github_release
         uses: mikepenz/release-changelog-builder-action@v4.0.0-b02
         with:
-          fromTag: "0.0.0"
+          fromTag: "v0.0.0"
+          configurationJson: |
+            {
+              "base_branches": [
+                "main"
+              ]
+            }
           # toTag: "${{github.sha}}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
