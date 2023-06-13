@@ -18,13 +18,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        with:
+          fetch-depth: 0
       - run: |
-          git fetch --prune --unshallow
           git rev-list --tags --skip=0 --max-count=1
           git describe --abbrev=0 --tags
       - name: Build Changelog
         id: github_release
-        uses: mikepenz/release-changelog-builder-action@v4
+        uses: mikepenz/release-changelog-builder-action@v4.0.0-b02
         # with:
         #   fromTag: "0.0.0"
         #   toTag: "0.1.0"
