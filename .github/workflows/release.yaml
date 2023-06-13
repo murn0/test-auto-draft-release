@@ -27,9 +27,7 @@ jobs:
           echo "from=$(git log -1 --format=%aI $(svu current))" >> $GITHUB_ENV
           echo "to=$(git log -1 --format=%aI ${{ github.event.repository.default_branch }})" >> $GITHUB_ENV
       - run: |
-          echo $from
-          echo $to
-          # gh pr list --search merged:$from..$to --json labels,number
+          gh pr list --search merged:$from..$to --json labels,number
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # build-changelog:
