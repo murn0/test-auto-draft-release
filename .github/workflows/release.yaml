@@ -19,7 +19,11 @@ jobs:
     if: failure()
     needs: check-first-release
     steps:
-      - run: echo "::error title=エラータイトル::エラーメッセージ%0Aタグがないので下記を実行して下さい"
+      - run: echo "::error title=Valid tags not found::$ERROR_MESSAGE"
+        env:
+          ERROR_MESSAGE: |
+            テスト<br>
+            e.g. git tag -a v0.0.0 -m 'v0.0.0' $(git rev-list --max-parents=0 HEAD) && git push origin v0.0.0
   # builld-changelog:
   #   runs-on: ubuntu-latest
   #   steps:
