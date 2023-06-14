@@ -3,15 +3,26 @@ name: Create release pull pull_request
 on: workflow_dispatch
 permissions: {}
 jobs:
-  # check-first-release:
-  #   runs-on: ubuntu-latest
-  #   permissions: {}
-  #   steps:
-  #     - run: |
-  #         gh -R "$GITHUB_REPOSITORY" release list --exclude-drafts --exclude-pre-releases
-  #         git describe --abbrev=0 --tags
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  check-first-release:
+    runs-on: ubuntu-latest
+    permissions: {}
+    outputs:
+      current_tag: ${{steps.check-tag.outputs.tag}}
+    steps:
+      - run: |
+          tag=$(git describe --abbrev=0 --tags 2>/dev/null)
+          if [ $? -ne 0 ]; then
+            echo "::error $ERROR_MESSAGE"
+          else
+            echo "$tag" >> "$GITHUB_OUTPUT"
+          fi
+        id: check-tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ERROR_MESSAGE: |
+            エラーメッセージ
+
+            タグがないので下記を実行して下さい
   # builld-changelog:
   #   runs-on: ubuntu-latest
   #   steps:
@@ -31,6 +42,7 @@ jobs:
   #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   build-changelog:
     runs-on: ubuntu-latest
+    needs: check-first-release
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
         with:
@@ -42,20 +54,12 @@ jobs:
         id: github_release
         uses: mikepenz/release-changelog-builder-action@v4.0.0-b02
         with:
-          fromTag: "v0.0.0"
+          fromTag: ${{needs.check-first-release.outputs.current_tag}}
           toTag: ${{ github.ref }}
-          configurationJson: |
-            {
-              "base_branches": [
-                "main"
-              ]
-            }
-          # toTag: "${{github.sha}}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: |
           echo ${{steps.github_release.outputs.changelog}}
-          echo ${{steps.github_release.outputs.pull_requests}}
   # bump-version:
   #   runs-on: ubuntu-latest
   #   permissions: {}
