@@ -19,10 +19,7 @@ jobs:
     if: failure()
     needs: check-first-release
     steps:
-      - run: echo "::error title=エラータイトル::$ERROR_MESSAGE"
-        env:
-          ERROR_MESSAGE: |
-            エラーメッセージ%0Aタグがないので下記を実行して下さい
+      - run: echo "::error title=エラータイトル::エラーメッセージ%0Aタグがないので下記を実行して下さい"
   # builld-changelog:
   #   runs-on: ubuntu-latest
   #   steps:
