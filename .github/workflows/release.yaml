@@ -13,7 +13,7 @@ jobs:
       - run: latestTag=$(git describe --abbrev=0 --tags)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo ":error $ERROR_MESSAGE"
+      - run: echo "::error $ERROR_MESSAGE"
         if: ${{failure()}}
         env:
           ERROR_MESSAGE: |
