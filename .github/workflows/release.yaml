@@ -6,17 +6,15 @@ jobs:
   check-first-release:
     runs-on: ubuntu-latest
     permissions: {}
-    outputs:
-      latestTag: ${{steps.check-tag.outputs.latestTag}}
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
         with:
           fetch-depth: 0
-      - run: echo "latestTag=$(git describe --abbrev=0 --tags)" >> "$GITHUB_OUTPUT"
+      - run: latestTag=$(git describe --abbrev=0 --tags)
         id: check-tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo ":error $ERROR_MESSAGE ${{steps.check-tag.outputs.latestTag}}"
+      - run: echo ":error $ERROR_MESSAGE"
         if: failure()
         env:
           ERROR_MESSAGE: |
