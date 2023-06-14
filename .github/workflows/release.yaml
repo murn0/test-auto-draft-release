@@ -41,7 +41,7 @@ jobs:
       #   with:
       #     aqua_version: v2.8.0
       - run: |
-          echo "from=$(git log -1 --format=%aI ${{steps.check-tag.outputs.latestTag}}" >> $GITHUB_ENV
+          echo "from=$(git log -1 --format=%aI ${{needs.check-first-release.outputs.latestTag}}" >> $GITHUB_ENV
           echo "to=$(git log -1 --format=%aI ${{ github.event.repository.default_branch }})" >> $GITHUB_ENV
       - run: |
           pr_labels=$(gh pr list --search merged:$from..$to --json labels,number --jq '.[] | .labels[].name')
