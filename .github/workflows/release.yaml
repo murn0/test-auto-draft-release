@@ -9,6 +9,9 @@ jobs:
     outputs:
       current_tag: ${{steps.check-tag.outputs.tag}}
     steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        with:
+          fetch-depth: 0
       - run: |
           tag=$(git describe --abbrev=0 --tags 2>/dev/null)
           if [ $? -ne 0 ]; then
