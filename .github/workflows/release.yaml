@@ -1,62 +1,61 @@
 ---
 name: Create release pull pull_request
-on:
-  workflow_dispatch:
-    inputs:
-      version:
-        default: "minor"
-        required: false
-        type: choice
-        options:
-          - "major"
-          - "minor"
-          - "patch"
-        description: "bump to [major|minor|patch]"
+on: workflow_dispatch
 permissions: {}
 jobs:
-  builld-changelog:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
-        with:
-          fetch-depth: 0
-      - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
-        with:
-          aqua_version: v2.8.0
-      - run: |
-          echo "from=$(git log -1 --format=%aI $(svu current))" >> $GITHUB_ENV
-          echo "to=$(git log -1 --format=%aI ${{ github.event.repository.default_branch }})" >> $GITHUB_ENV
-      - run: |
-          pr_labels=$(gh pr list --search merged:$from..$to --json labels,number --jq '.[] | .labels[].name')
-          echo $pr_labels
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  # build-changelog:
+  # check-first-release:
+  #   runs-on: ubuntu-latest
+  #   permissions: {}
+  #   steps:
+  #     - run: |
+  #         gh -R "$GITHUB_REPOSITORY" release list --exclude-drafts --exclude-pre-releases
+  #         git describe --abbrev=0 --tags
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # builld-changelog:
   #   runs-on: ubuntu-latest
   #   steps:
   #     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
   #       with:
   #         fetch-depth: 0
-  #     - run: |
-  #         git rev-list --tags --skip=0 --max-count=1
-  #         git describe --abbrev=0 --tags
-  #     - name: Build Changelog
-  #       id: github_release
-  #       uses: mikepenz/release-changelog-builder-action@v4.0.0-b02
+  #     - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
   #       with:
-  #         fromTag: "v0.0.0"
-  #         configurationJson: |
-  #           {
-  #             "base_branches": [
-  #               "main"
-  #             ]
-  #           }
-  #         # toTag: "${{github.sha}}"
+  #         aqua_version: v2.8.0
+  #     - run: |
+  #         echo "from=$(git log -1 --format=%aI $(svu current))" >> $GITHUB_ENV
+  #         echo "to=$(git log -1 --format=%aI ${{ github.event.repository.default_branch }})" >> $GITHUB_ENV
+  #     - run: |
+  #         pr_labels=$(gh pr list --search merged:$from..$to --json labels,number --jq '.[] | .labels[].name')
+  #         echo $pr_labels
   #       env:
   #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #     - run: |
-  #         echo ${{steps.github_release.outputs.changelog}}
-  #         echo ${{steps.github_release.outputs.pull_requests}}
+  build-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        with:
+          fetch-depth: 0
+      - run: |
+          git rev-list --tags --skip=0 --max-count=1
+          git describe --abbrev=0 --tags
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v4.0.0-b02
+        with:
+          fromTag: "v0.0.0"
+          toTag: $GITHUB_REF
+          configurationJson: |
+            {
+              "base_branches": [
+                "main"
+              ]
+            }
+          # toTag: "${{github.sha}}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          echo ${{steps.github_release.outputs.changelog}}
+          echo ${{steps.github_release.outputs.pull_requests}}
   # bump-version:
   #   runs-on: ubuntu-latest
   #   permissions: {}
