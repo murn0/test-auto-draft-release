@@ -43,7 +43,7 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v4.0.0-b02
         with:
           fromTag: "v0.0.0"
-          toTag: $GITHUB_REF
+          toTag: ${{ github.ref }}
           configurationJson: |
             {
               "base_branches": [
