@@ -14,11 +14,7 @@ jobs:
           fetch-depth: 0
       - run: |
           tag=$(git describe --abbrev=0 --tags 2>/dev/null)
-          # if [ $? -ne 0 ]; then
-          #   echo "::error $ERROR_MESSAGE"
-          # else
-          #   echo "current_tag=$tag" >> "$GITHUB_OUTPUT"
-          # fi
+          echo $tag
         id: check-tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
