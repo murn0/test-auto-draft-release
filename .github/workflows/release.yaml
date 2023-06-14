@@ -22,7 +22,7 @@ jobs:
       - run: echo "::error title=エラータイトル::$ERROR_MESSAGE"
         env:
           ERROR_MESSAGE: |
-            エラーメッセージ\nタグがないので下記を実行して下さい
+            エラーメッセージ%0Aタグがないので下記を実行して下さい
   # builld-changelog:
   #   runs-on: ubuntu-latest
   #   steps:
