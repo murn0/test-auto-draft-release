@@ -11,11 +11,10 @@ jobs:
         with:
           fetch-depth: 0
       - run: latestTag=$(git describe --abbrev=0 --tags)
-        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo ":error $ERROR_MESSAGE"
-        if: failure()
+        if: ${{failure()}}
         env:
           ERROR_MESSAGE: |
             エラーメッセージ
