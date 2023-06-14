@@ -19,7 +19,7 @@ jobs:
     if: failure()
     needs: check-first-release
     steps:
-      - run: echo "::error $ERROR_MESSAGE"
+      - run: echo "::error::$ERROR_MESSAGE"
         env:
           ERROR_MESSAGE: |
             エラーメッセージ
