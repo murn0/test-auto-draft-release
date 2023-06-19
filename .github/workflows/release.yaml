@@ -18,17 +18,23 @@ jobs:
         id: check-tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  error-latest-tag:
-    runs-on: ubuntu-latest
-    permissions: {}
-    if: failure()
-    needs: check-first-release
-    steps:
       - run: echo "::error title=Valid git tags not found::$ERROR_MESSAGE"
+        if: ${{failure()}}
         env:
           ERROR_MESSAGE: |
             e.g. git tag -a v0.0.0 -m 'v0.0.0' $(git rev-list --max-parents=0 HEAD) && git push origin v0.0.0
-  builld-changelog:
+
+  # error-latest-tag:
+  #   runs-on: ubuntu-latest
+  #   permissions: {}
+  #   if: failure()
+  #   needs: check-first-release
+  #   steps:
+  #     - run: echo "::error title=Valid git tags not found::$ERROR_MESSAGE"
+  #       env:
+  #         ERROR_MESSAGE: |
+  #           e.g. git tag -a v0.0.0 -m 'v0.0.0' $(git rev-list --max-parents=0 HEAD) && git push origin v0.0.0
+  get-pullRequest:
     runs-on: ubuntu-latest
     permissions: {}
     if: success()
