@@ -34,46 +34,42 @@ jobs:
   #       env:
   #         ERROR_MESSAGE: |
   #           e.g. git tag -a v0.0.0 -m 'v0.0.0' $(git rev-list --max-parents=0 HEAD) && git push origin v0.0.0
-  get-pullRequest:
+  bump-version:
+    needs: check-first-release
     runs-on: ubuntu-latest
     permissions: {}
     if: success()
-    needs: check-first-release
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
         with:
           fetch-depth: 0
-      # - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
-      #   with:
-      #     aqua_version: v2.8.0
       - run: |
-          echo "from=$(git log -1 --format=%aI ${{needs.check-first-release.outputs.latestTag}})" >> $GITHUB_ENV
-          echo "to=$(git log -1 --format=%aI ${{ github.event.repository.default_branch }})" >> $GITHUB_ENV
+          echo "fromDate=$(git log -1 --format=%aI ${{needs.check-first-release.outputs.latestTag}})" >> $GITHUB_ENV
+          echo "toDate=$(git log -1 --format=%aI ${{ github.event.repository.default_branch }})" >> $GITHUB_ENV
       - run: |
-          pr_labels=$(gh pr list --search merged:$from..$to --json labels,number --jq '.[] | .labels[].name')
-          echo $pr_labels
+          echo "labels=$(gh pr list --search merged:$fromDate..$toDate --json labels,number --jq '.[] | .labels[].name')" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  # build-changelog:
-  #   runs-on: ubuntu-latest
-  #   needs: check-first-release
-  #   steps:
-  #     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
-  #       with:
-  #         fetch-depth: 0
-  #     - run: |
-  #         git rev-list --tags --skip=0 --max-count=1
-  #         git describe --abbrev=0 --tags
-  #     - name: Build Changelog
-  #       id: github_release
-  #       uses: mikepenz/release-changelog-builder-action@v4.0.0-b02
-  #       with:
-  #         fromTag: ${{needs.check-first-release.outputs.current_tag}}
-  #         toTag: ${{ github.ref }}
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #     - run: |
-  #         echo ${{steps.github_release.outputs.changelog}}
+      - run:  |
+          bash ./scripts/bump.sh $labels
+  build-changelog:
+    needs: [check-first-release]
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        with:
+          fetch-depth: 0
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v4.0.0-b02
+        with:
+          fromTag: ${{needs.check-first-release.outputs.latestTag}}
+          toTag: ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          echo ${{steps.github_release.outputs.changelog}}
   # bump-version:
   #   runs-on: ubuntu-latest
   #   permissions: {}
