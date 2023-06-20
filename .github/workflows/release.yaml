@@ -47,7 +47,8 @@ jobs:
           echo "fromDate=$(git log -1 --format=%aI ${{needs.check-first-release.outputs.latestTag}})" >> $GITHUB_ENV
           echo "toDate=$(git log -1 --format=%aI ${{ github.event.repository.default_branch }})" >> $GITHUB_ENV
       - run: |
-          echo "labels=$(gh pr list --search merged:$fromDate..$toDate --json labels,number --jq '.[] | .labels[].name')" >> $GITHUB_ENV
+          labels=$(gh pr list --search merged:$fromDate..$toDate --json labels,number --jq '.[] | .labels[].name')
+          echo $labels
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run:  |
