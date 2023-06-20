@@ -82,7 +82,7 @@ jobs:
         with:
           aqua_version: v2.8.0
       - run: |
-          bash ./scripts/bump.sh ${{needs.build-changelog.outputs.changelog}}
+          bash ./scripts/bump.sh "${{needs.build-changelog.outputs.changelog}}"
   show-changelog:
     needs: [build-changelog, bump-version]
     runs-on: ubuntu-latest
