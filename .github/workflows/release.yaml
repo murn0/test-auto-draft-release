@@ -81,13 +81,8 @@ jobs:
       - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
         with:
           aqua_version: v2.8.0
-      - uses: haya14busa/action-cond@v1.1.0
-        id: level
-        with:
-          cond: ${{ contains(needs.build-changelog.outputs.changelog, '## 🚀 Features') }}
-          if_true: minor
-          if_false: patch
-      - run: svu ${{steps.level.outputs.value}}
+      - run: |
+          bash ./scripts/bump.sh ${{needs.build-changelog.outputs.changelog}}
   show-changelog:
     needs: [build-changelog, bump-version]
     runs-on: ubuntu-latest
