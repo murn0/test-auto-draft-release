@@ -88,6 +88,12 @@ jobs:
           if_true: minor
           if_false: patch
       - run: svu ${{steps.level.outputs.value}}
+  show-changelog:
+    needs: [build-changelog, bump-version]
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - run: echo ${{needs.build-changelog.outputs.changelog}}
   # get-current-version:
   #   outputs:
   #     current_version: ${{steps.current.outputs.current_version}}
