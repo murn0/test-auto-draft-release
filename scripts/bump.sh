@@ -9,11 +9,11 @@ if [ -z "$input_string" ]; then
     exit 1
 else
     # 文字列内にキーワードが存在するかチェックし、該当する優先度を設定する
-    if [[ $input_string =~ "breaking-change" ]]; then
+    if echo "$input_string" | grep -q "breaking-change"; then
         priority="major"
-    elif [[ $input_string =~ "enhancement" || $input_string =~ "feature" ]]; then
+    elif echo "$input_string" | grep -qE "enhancement|feature"; then
         priority="minor"
-    elif [[ $input_string =~ "fix" ]]; then
+    elif echo "$input_string" | grep -q "fix"; then
         priority="patch"
     else
         priority="patch"  # どのキーワードも含まれなかった場合のデフォルト
