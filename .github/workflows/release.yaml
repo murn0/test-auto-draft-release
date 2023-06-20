@@ -110,7 +110,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_VERSION: ${{needs.bump-version.outputs.releaseVersion}}
-          CHANGELOG: ${{needs.build-changelog.outputs.changelog}}
+          CHANGELOG: "${{needs.build-changelog.outputs.changelog}}"
   # get-current-version:
   #   outputs:
   #     current_version: ${{steps.current.outputs.current_version}}
