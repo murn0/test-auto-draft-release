@@ -48,11 +48,10 @@ jobs:
           echo "toDate=$(git log -1 --format=%aI ${{ github.event.repository.default_branch }})" >> $GITHUB_ENV
       - run: |
           labels=$(gh pr list --search merged:$fromDate..$toDate --json labels,number --jq '.[] | .labels[].name')
-          echo "labels=$labels" >> $GITHUB_ENV
+          echo $labels
+          bash ./scripts/bump.sh $labels
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run:  |
-          bash ./scripts/bump.sh $labels
   build-changelog:
     needs: [check-first-release]
     runs-on: ubuntu-latest
