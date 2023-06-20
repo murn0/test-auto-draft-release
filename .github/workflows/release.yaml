@@ -48,7 +48,7 @@ jobs:
           echo "toDate=$(git log -1 --format=%aI ${{ github.event.repository.default_branch }})" >> $GITHUB_ENV
       - run: |
           labels=$(gh pr list --search merged:$fromDate..$toDate --json labels,number --jq '.[] | .labels[].name')
-          echo $labels
+          echo "labels=$labels" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run:  |
