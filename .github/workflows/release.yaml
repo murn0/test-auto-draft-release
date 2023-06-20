@@ -105,7 +105,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions: {}
     steps:
-      - run: echo ${{needs.bump-version.outputs.releaseVersion}}
+      - run: |
+          gh pr create -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --title $RELEASE_VERSION --body $CHANGELOG
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_VERSION: ${{needs.bump-version.outputs.releaseVersion}}
+          CHANGELOG: ${{needs.build-changelog.outputs.changelog}}
   # get-current-version:
   #   outputs:
   #     current_version: ${{steps.current.outputs.current_version}}
