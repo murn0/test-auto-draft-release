@@ -9,6 +9,7 @@ if [ -z "$input_string" ]; then
     exit 1
 else
     output_string=$(echo "$input_string" | tr '\n' ' ')
+    echo $output_string
     # 文字列内にキーワードが存在するかチェックし、該当する優先度を設定する
     if [[ $output_string =~ "breaking-change" ]]; then
         priority="major"
