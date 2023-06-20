@@ -90,14 +90,15 @@ jobs:
           search_breaking_changes="## ⚠️ Breaking Changes"
 
           if [[ "$changelog" == *"$search_features"* ]]; then
-              release_version="minor"
+              release_level="minor"
           elif [[ "$changelog" == *"$search_breaking_changes"* ]]; then
-              release_version="major"
+              release_level="major"
           else
-              release_version="patch"
+              release_level="patch"
           fi
 
-          echo "releaseVersion=$release_version" >> $GITHUB_OUTPUT
+          echo "level=$release_level" >> $GITHUB_ENV
+      - run: echo "releaseVersion=svu $level" >> $GITHUB_OUTPUT
         id: set-version
   show-changelog:
     needs: [build-changelog, bump-version]
