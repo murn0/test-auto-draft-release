@@ -84,8 +84,20 @@ jobs:
         with:
           aqua_version: v2.8.0
       - run: |
-          version=bash ./scripts/bump.sh "${{needs.build-changelog.outputs.changelog}}"
-          echo "releaseVersion=$version" >> $GITHUB_OUTPUT
+          set -eu
+          changelog="${{needs.build-changelog.outputs.changelog}}"
+          search_features="## 🚀 Features"
+          search_breaking_changes="## ⚠️ Breaking Changes"
+
+          if [[ "$changelog" == *"$search_features"* ]]; then
+              release_version="minor"
+          elif [[ "$changelog" == *"$search_breaking_changes"* ]]; then
+              release_version="major"
+          else
+              release_version="patch"
+          fi
+
+          echo "releaseVersion=$release_version" >> $GITHUB_OUTPUT
         id: set-version
   show-changelog:
     needs: [build-changelog, bump-version]
