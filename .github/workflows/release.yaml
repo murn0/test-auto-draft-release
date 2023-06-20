@@ -60,9 +60,9 @@ jobs:
     outputs:
       changelog: ${{steps.github_release.outputs.changelog}}
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
-        with:
-          fetch-depth: 0
+      # - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      #   with:
+      #     fetch-depth: 0
       - name: Build Changelog
         id: github_release
         uses: mikepenz/release-changelog-builder-action@v4.0.0-b02
