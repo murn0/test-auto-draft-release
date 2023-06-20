@@ -76,19 +76,23 @@ jobs:
     runs-on: ubuntu-latest
     permissions: {}
     if: success()
+    outputs:
+      releaseVersion: ${{steps.set-version.outputs}}
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
       - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
         with:
           aqua_version: v2.8.0
       - run: |
-          bash ./scripts/bump.sh "${{needs.build-changelog.outputs.changelog}}"
+          version=bash ./scripts/bump.sh "${{needs.build-changelog.outputs.changelog}}"
+          echo "releaseVersion=$version" >> $GITHUB_OUTPUT
+        id: set-version
   show-changelog:
     needs: [build-changelog, bump-version]
     runs-on: ubuntu-latest
     permissions: {}
     steps:
-      - run: echo ${{needs.build-changelog.outputs.changelog}}
+      - run: echo ${{needs.bump-version.outputs.releaseVersion}}
   # get-current-version:
   #   outputs:
   #     current_version: ${{steps.current.outputs.current_version}}
