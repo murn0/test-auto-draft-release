@@ -98,7 +98,7 @@ jobs:
           fi
 
           echo "level=$release_level" >> $GITHUB_ENV
-      - run: echo "releaseVersion=svu $level" >> $GITHUB_OUTPUT
+      - run: echo "releaseVersion=$(svu $level)" >> $GITHUB_OUTPUT
         id: set-version
   show-changelog:
     needs: [build-changelog, bump-version]
