@@ -34,28 +34,31 @@ jobs:
   #       env:
   #         ERROR_MESSAGE: |
   #           e.g. git tag -a v0.0.0 -m 'v0.0.0' $(git rev-list --max-parents=0 HEAD) && git push origin v0.0.0
-  bump-version:
+  # bump-version:
+  #   needs: check-first-release
+  #   runs-on: ubuntu-latest
+  #   permissions: {}
+  #   if: success()
+  #   steps:
+  #     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+  #       with:
+  #         fetch-depth: 0
+  #     - run: |
+  #         echo "fromDate=$(git log -1 --format=%aI ${{needs.check-first-release.outputs.latestTag}})" >> $GITHUB_ENV
+  #         echo "toDate=$(git log -1 --format=%aI ${{ github.event.repository.default_branch }})" >> $GITHUB_ENV
+  #     - run: |
+  #         labels=$(gh pr list --search merged:$fromDate..$toDate --json labels,number --jq '.[] | .labels[].name')
+  #         echo $labels
+  #         bash ./scripts/bump.sh $labels
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  build-changelog:
     needs: check-first-release
     runs-on: ubuntu-latest
     permissions: {}
     if: success()
-    steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
-        with:
-          fetch-depth: 0
-      - run: |
-          echo "fromDate=$(git log -1 --format=%aI ${{needs.check-first-release.outputs.latestTag}})" >> $GITHUB_ENV
-          echo "toDate=$(git log -1 --format=%aI ${{ github.event.repository.default_branch }})" >> $GITHUB_ENV
-      - run: |
-          labels=$(gh pr list --search merged:$fromDate..$toDate --json labels,number --jq '.[] | .labels[].name')
-          echo $labels
-          bash ./scripts/bump.sh $labels
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  build-changelog:
-    needs: [check-first-release]
-    runs-on: ubuntu-latest
-    if: success()
+    outputs:
+      changelog: ${{steps.github_release.outputs.changelog}}
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
         with:
@@ -68,20 +71,23 @@ jobs:
           toTag: ${{ github.ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: |
-          echo ${{steps.github_release.outputs.changelog}}
-  # bump-version:
-  #   runs-on: ubuntu-latest
-  #   permissions: {}
-  #   steps:
-  #     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
-  #     - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
-  #       with:
-  #         aqua_version: v2.8.0
-  #     - run: |
-  #         svu $BUMP_VERSION
-  #       env:
-  #         BUMP_VERSION: ${{ inputs.version }}
+  bump-version:
+    needs: build-changelog
+    runs-on: ubuntu-latest
+    permissions: {}
+    if: success()
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
+        with:
+          aqua_version: v2.8.0
+      - uses: haya14busa/action-cond@v1.1.0
+        id: level
+        with:
+          cond: ${{ contains(needs.build-changelog.outputs.changelog, '## 🚀 Features') }}
+          if_true: minor
+          if_false: patch
+      - run: svu ${{steps.level.outputs.value}}
   # get-current-version:
   #   outputs:
   #     current_version: ${{steps.current.outputs.current_version}}
