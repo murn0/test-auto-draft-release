@@ -26,10 +26,12 @@ jobs:
       - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
         with:
           aqua_version: v2.8.0
-      - run: echo "count=$(gh pr list -B $GITHUB_REF_NAME -H release/v0.00 --json 'id' -q '.[] | length')" >> $GITHUB_ENV
+      - run: echo "COUNT=$(gh pr list -B $GITHUB_REF_NAME -H release/v0.00 --json 'id' -q '.[] | length')" >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - run: |
-          echo ${{fromJson(env.COUNT)}}
-          echo ${{toJson(env.COUNT)}}
+          ${{fromJson(env.COUNT)}}
+          ${{toJson(env.COUNT)}}
       - run: |
           ghcp -v
           # ghcp empty-commit -r $GITHUB_REPOSITORY -b release/v0.0.0 -m 'chore: empty commit to open follow up pull request'
