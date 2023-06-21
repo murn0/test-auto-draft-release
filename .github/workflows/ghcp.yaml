@@ -30,7 +30,7 @@ jobs:
           ghcp -v
           ghcp empty-commit -r $GITHUB_REPOSITORY -b release/v0.0.0 -m 'chore: empty commit to open follow up pull request'
           # ghcp pull-request -r $GITHUB_REPOSITORY -b release/v0.0.0 --title v0.0.0 --body $CHANGELOG
-          gh pr create -B $GITHUB_REF_NAME -H release/v0.0.0 --title v0.0.0 --body "${{needs.build-changelog.outputs.changelog}}"
+          gh pr create -B $GITHUB_REF_NAME -H release/v0.0.0 --title v0.0.0 and --body "${{needs.build-changelog.outputs.changelog}}"
         env:
           GITHUB_TOKEN: ${{ github.token }}
           CHANGELOG: ${{needs.build-changelog.outputs.changelog}}
