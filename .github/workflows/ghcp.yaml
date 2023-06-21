@@ -16,6 +16,6 @@ jobs:
       - run: |
           ghcp -v
           # ghcp empty-commit -r $GITHUB_REPOSITORY -b release/v0.0.0 -m 'chore: empty commit to open follow up pull request'
-          ghcp pull-request -r $GITHUB_REPOSITORY -b release/v0.0.0-b --title TITLE --body BODY
+          ghcp pull-request -r $GITHUB_REPOSITORY -b release/v0.0.0 --title TITLE --body BODY
         env:
           GITHUB_TOKEN: ${{ github.token }}
