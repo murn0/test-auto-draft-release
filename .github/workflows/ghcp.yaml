@@ -3,19 +3,32 @@ name: ghcp test
 on: workflow_dispatch
 permissions: {}
 jobs:
+  build-changelog:
+    runs-on: ubuntu-latest
+    permissions: {}
+    outputs:
+      changelog: ${{steps.github_release.outputs.changelog}}
+    steps:
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v4.0.0-b02
+        with:
+          fromTag: v0.0.0
+          toTag: ${{ github.ref }}
   run-ghcp:
+    needs: build-changelog
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
       - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
         with:
           aqua_version: v2.8.0
       - run: |
           ghcp -v
           ghcp empty-commit -r $GITHUB_REPOSITORY -b release/v0.0.0 -m 'chore: empty commit to open follow up pull request'
-          ghcp pull-request -r $GITHUB_REPOSITORY -b release/v0.0.0 --title TITLE --body BODY
+          ghcp pull-request -r $GITHUB_REPOSITORY -b release/v0.0.0 --title TITLE --body $CHANGELOG
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          CHANGELOG: ${{needs.build-changelog.outputs.changelog}}
