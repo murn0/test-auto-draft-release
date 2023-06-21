@@ -7,3 +7,4 @@ registries:
 packages:
 - name: fsaintjacques/semver-tool@3.4.0
 - name: caarlos0/svu@v1.10.2
+- name: int128/ghcp@v1.13.2
