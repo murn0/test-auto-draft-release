@@ -16,8 +16,8 @@ jobs:
           latestTag=$(git describe --abbrev=0 --tags)
           echo "latestTag=$latestTag" >> "$GITHUB_OUTPUT"
         id: check-tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo "::error title=Valid git tags not found::$ERROR_MESSAGE"
         if: ${{failure()}}
         env:
@@ -69,8 +69,8 @@ jobs:
         with:
           fromTag: ${{needs.check-first-release.outputs.latestTag}}
           toTag: ${{ github.ref }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   bump-version:
     needs: build-changelog
     runs-on: ubuntu-latest
@@ -100,15 +100,37 @@ jobs:
           echo "level=$release_level" >> $GITHUB_ENV
       - run: echo "releaseVersion=$(svu $level)" >> $GITHUB_OUTPUT
         id: set-version
-  show-changelog:
+  generate-pull-request:
     needs: [build-changelog, bump-version]
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
+        with:
+          aqua_version: v2.8.0
+      - name: Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@b62528385c34dbc9f38e5f4225ac829252d1ea92 # v1.8.0
+        with:
+          app_id: ${{secrets.gh_app_id}}
+          private_key: ${{secrets.gh_app_private_key}}
       - run: |
-          gh pr create -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --title $RELEASE_VERSION --body "${{needs.build-changelog.outputs.changelog}}"
+          set -eu
+          ghcp -v
+          SAME_PR_COUNT=$(gh pr list -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --json 'id' --jq '.[] | length')
+          if [[ -z "$SAME_PR_COUNT" ]]; then
+            ghcp empty-commit -r $GITHUB_REPOSITORY -b release/$RELEASE_VERSION -m 'chore: empty commit to open follow up pull request'
+            gh pr create -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --title $RELEASE_VERSION --body "$CHANGELOG" --reviewer murn0
+          else
+            SAME_PR_NUMBER=$(gh pr list -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --json 'number' --jq '.[].number')
+            gh pr edit $SAME_PR_NUMBER --title '$RELEASE_VERSION [edit]' --body "$CHANGELOG"
+          fi
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
+          CHANGELOG: ${{needs.build-changelog.outputs.changelog}}
           RELEASE_VERSION: ${{needs.bump-version.outputs.releaseVersion}}
   # get-current-version:
   #   outputs:
