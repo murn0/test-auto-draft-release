@@ -100,8 +100,26 @@ jobs:
           echo "level=$release_level" >> $GITHUB_ENV
       - run: echo "releaseVersion=$(svu $level)" >> $GITHUB_OUTPUT
         id: set-version
+  check-milestone:
+    needs: bump-version
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - run: |
+          set -eu
+          milestones=$(gh api -X GET /repos/${GITHUB_REPOSITORY}/milestones -f state=all)
+          if ! $(echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\")"); then
+            gh api -X POST repos/${GITHUB_REPOSITORY}/milestones -f title=$RELEASE_VERSION}
+          elif $(echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\" and .state == \"closed\")"); then
+            milestone_number=$(echo "${milestones}" | jq ". | map(select(.title == \"$RELEASE_VERSION\")) | first | .number")
+            gh api -X PATCH repos/${GITHUB_REPOSITORY}/milestones/${milestone_number} -f state=open
+          fi
+        env:
+          GITHUB_TOKEN: ${{github.token}}
+          RELEASE_VERSION: ${{needs.bump-version.outputs.releaseVersion}}
   generate-pull-request:
-    needs: [build-changelog, bump-version]
+    needs: [build-changelog, bump-version, check-milestone]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -123,10 +141,10 @@ jobs:
           SAME_PR_COUNT=$(gh pr list -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --json 'id' --jq '.[] | length')
           if [[ -z "$SAME_PR_COUNT" ]]; then
             ghcp empty-commit -r $GITHUB_REPOSITORY -b release/$RELEASE_VERSION -m 'chore: empty commit to open follow up pull request'
-            gh pr create -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --title $RELEASE_VERSION --body "$CHANGELOG" --reviewer murn0
+            gh pr create -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --title $RELEASE_VERSION --body "$CHANGELOG" --reviewer murn0 --milestone $RELEASE_VERSION
           else
             SAME_PR_NUMBER=$(gh pr list -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --json 'number' --jq '.[].number')
-            gh pr edit $SAME_PR_NUMBER --title '$RELEASE_VERSION [edit]' --body "$CHANGELOG"
+            gh pr edit $SAME_PR_NUMBER --title '$RELEASE_VERSION [edit]' --body "$CHANGELOG" --milestone $RELEASE_VERSION
           fi
         env:
           GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
