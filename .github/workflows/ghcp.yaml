@@ -27,7 +27,7 @@ jobs:
         with:
           aqua_version: v2.8.0
       - run: |
-          gh pr list -B $GITHUB_REF_NAME -H release/v0.00 --json 'id' -q '.[] | length'
+          echo $(gh pr list -B $GITHUB_REF_NAME -H release/v0.00 --json 'id' -q '.[] | length')
           echo "COUNT=$(gh pr list -B $GITHUB_REF_NAME -H release/v0.00 --json 'id' -q '.[] | length')" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ github.token }}
