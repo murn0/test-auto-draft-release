@@ -116,7 +116,7 @@ jobs:
           set -eu
           milestones=$(gh api -X GET /repos/${GITHUB_REPOSITORY}/milestones -f state=all)
           if ! $(echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\")"); then
-            gh api -X POST repos/${GITHUB_REPOSITORY}/milestones -f title=$RELEASE_VERSION}
+            gh api -X POST repos/${GITHUB_REPOSITORY}/milestones -f title=$RELEASE_VERSION
           elif $(echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\" and .state == \"closed\")"); then
             milestone_number=$(echo "${milestones}" | jq ". | map(select(.title == \"$RELEASE_VERSION\")) | first | .number")
             gh api -X PATCH repos/${GITHUB_REPOSITORY}/milestones/${milestone_number} -f state=open
