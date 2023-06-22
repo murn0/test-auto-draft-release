@@ -32,7 +32,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - run: |
-          echo ${{env.COUNT}}
+          echo "$COUNT is not valid"
+        if: env.COUNT == ''
+      - run: |
+          echo $COUNT
+        if:  env.COUNT != ''
       - run: |
           ghcp -v
           # ghcp empty-commit -r $GITHUB_REPOSITORY -b release/v0.0.0 -m 'chore: empty commit to open follow up pull request'
