@@ -30,8 +30,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - run: |
-          ${{fromJson(env.COUNT)}}
-          ${{toJson(env.COUNT)}}
+          echo $FROM
+          echo $TO
+        env:
+          FROM: ${{fromJson(env.COUNT)}}
+          TO: ${{toJson(env.COUNT)}}
       - run: |
           ghcp -v
           # ghcp empty-commit -r $GITHUB_REPOSITORY -b release/v0.0.0 -m 'chore: empty commit to open follow up pull request'
