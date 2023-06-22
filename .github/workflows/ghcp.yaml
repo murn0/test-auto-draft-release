@@ -27,21 +27,16 @@ jobs:
         with:
           aqua_version: v2.8.0
       - run: |
-          echo $(gh pr list -B $GITHUB_REF_NAME -H release/v0.0.0 --json 'id' -q '.[] | length')
-          echo "COUNT=$(gh pr list -B $GITHUB_REF_NAME -H release/v0.0.0 --json 'id' -q '.[] | length')" >> $GITHUB_ENV
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - run: |
-          echo "$COUNT is not valid"
-        if: env.COUNT == ''
-      - run: |
-          echo $COUNT
-        if:  env.COUNT != ''
-      - run: |
           ghcp -v
-          # ghcp empty-commit -r $GITHUB_REPOSITORY -b release/v0.0.0 -m 'chore: empty commit to open follow up pull request'
+          SAME_PR_COUNT=$(gh pr list -B $GITHUB_REF_NAME -H release/v0.0.0 --json 'id' --jq '.[] | length')
+          if [[ -z "$SAME_PR_COUNT" ]]; then
+            ghcp empty-commit -r $GITHUB_REPOSITORY -b release/v0.0.0 -m 'chore: empty commit to open follow up pull request'
+            gh pr create -B $GITHUB_REF_NAME -H release/v0.0.0 --title v0.0.0 --body "$CHANGELOG"
+          else
+            SAME_PR_NUMBER=$(gh pr list -B $GITHUB_REF_NAME -H release/v0.0.0 --json 'number' --jq '.[].number')
+            gh pr edit $SAME_PR_NUMBER --title 'v0.0.0 [edit]' --body "$CHANGELOG"
+          fi
           # ghcp pull-request -r $GITHUB_REPOSITORY -b release/v0.0.0 --title v0.0.0 --body $CHANGELOG
-          # gh pr create -B $GITHUB_REF_NAME -H release/v0.0.0 --title v0.0.0 --body "$CHANGELOG"
         env:
           GITHUB_TOKEN: ${{ github.token }}
           CHANGELOG: ${{needs.build-changelog.outputs.changelog}}
