@@ -26,7 +26,9 @@ jobs:
       - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
         with:
           aqua_version: v2.8.0
-      - run: echo "COUNT=$(gh pr list -B $GITHUB_REF_NAME -H release/v0.00 --json 'id' -q '.[] | length')" >> $GITHUB_ENV
+      - run: |
+          gh pr list -B $GITHUB_REF_NAME -H release/v0.00 --json 'id' -q '.[] | length'
+          echo "COUNT=$(gh pr list -B $GITHUB_REF_NAME -H release/v0.00 --json 'id' -q '.[] | length')" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - run: |
