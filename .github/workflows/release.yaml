@@ -106,6 +106,12 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@b62528385c34dbc9f38e5f4225ac829252d1ea92 # v1.8.0
+        with:
+          app_id: ${{secrets.gh_app_id}}
+          private_key: ${{secrets.gh_app_private_key}}
       - run: |
           set -eu
           milestones=$(gh api -X GET /repos/${GITHUB_REPOSITORY}/milestones -f state=all)
@@ -116,7 +122,7 @@ jobs:
             gh api -X PATCH repos/${GITHUB_REPOSITORY}/milestones/${milestone_number} -f state=open
           fi
         env:
-          GITHUB_TOKEN: ${{github.token}}
+          GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
           RELEASE_VERSION: ${{needs.bump-version.outputs.releaseVersion}}
   generate-pull-request:
     needs: [build-changelog, bump-version, check-milestone]
