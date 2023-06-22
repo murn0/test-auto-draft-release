@@ -40,7 +40,7 @@ jobs:
             gh pr create -B $GITHUB_REF_NAME -H release/v0.0.0 --title v0.0.0 --body "$CHANGELOG" --reviewer murn0
           else
             SAME_PR_NUMBER=$(gh pr list -B $GITHUB_REF_NAME -H release/v0.0.0 --json 'number' --jq '.[].number')
-            gh pr edit $SAME_PR_NUMBER --title 'v0.0.0 [edit]' --body "$CHANGELOG" --reviewer murn0
+            gh pr edit $SAME_PR_NUMBER --title 'v0.0.0 [edit]' --body "$CHANGELOG"
           fi
         env:
           GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
