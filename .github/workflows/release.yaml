@@ -115,9 +115,9 @@ jobs:
         with:
           app_id: ${{secrets.gh_app_id}}
           private_key: ${{secrets.gh_app_private_key}}
+      - run: gh label create 'Release' -f --description 'Release Pull Request.' --color E4E669
       - run: |
           set -eu
-          # gh label create 'Release' -f --description 'Release Pull Request.' --color E4E669
           milestones=$(gh api -X GET /repos/${GITHUB_REPOSITORY}/milestones -f state=all)
           if ! $(echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\")"); then
             gh api -X POST repos/${GITHUB_REPOSITORY}/milestones -f title=$RELEASE_VERSION
@@ -158,7 +158,7 @@ jobs:
             gh pr create -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --title "$RELEASE_VERSION $RELEASE_DATE" --body "$CHANGELOG" --reviewer murn0 --milestone "$RELEASE_VERSION" --label Release
           else
             SAME_PR_NUMBER=$(gh pr list -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --json 'number' --jq '.[].number')
-            gh pr edit $SAME_PR_NUMBER --title "$RELEASE_VERSION $RELEASE_DATE" --body "$CHANGELOG" --milestone "$RELEASE_VERSION"
+            gh pr edit $SAME_PR_NUMBER --title "$RELEASE_VERSION $RELEASE_DATE" --body "$CHANGELOG" --milestone "$RELEASE_VERSION" --add-label Release
           fi
         env:
           GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
