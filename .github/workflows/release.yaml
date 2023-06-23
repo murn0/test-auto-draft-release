@@ -19,10 +19,12 @@ jobs:
         # env:
         #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo "::error title=Valid git tags not found::$ERROR_MESSAGE"
-        if: ${{failure()}}
+        if: failure()
         env:
           ERROR_MESSAGE: |
             e.g. git tag -a v0.0.0 -m 'v0.0.0' $(git rev-list --max-parents=0 HEAD) && git push origin v0.0.0
+      - run: echo "::notice::Success."
+        if: success()
 
   # error-latest-tag:
   #   runs-on: ubuntu-latest
@@ -116,6 +118,8 @@ jobs:
           app_id: ${{secrets.gh_app_id}}
           private_key: ${{secrets.gh_app_private_key}}
       - run: gh label create 'Release' -f --description 'Release Pull Request.' --color E4E669
+        env:
+          GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
       - run: |
           set -eu
           milestones=$(gh api -X GET /repos/${GITHUB_REPOSITORY}/milestones -f state=all)
