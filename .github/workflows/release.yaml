@@ -3,28 +3,32 @@ name: Create release pull pull_request
 on: workflow_dispatch
 permissions: {}
 jobs:
-  check-first-release:
+  build-changelog:
     runs-on: ubuntu-latest
     permissions: {}
     outputs:
-      latestTag: ${{steps.check-tag.outputs.latestTag}}
+      changelog: ${{steps.github_release.outputs.changelog}}
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
         with:
           fetch-depth: 0
-      - run: |
-          latestTag=$(git describe --abbrev=0 --tags)
-          echo "latestTag=$latestTag" >> "$GITHUB_OUTPUT"
+      - name: Get latest tag
         id: check-tag
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          latestTag=$(git describe --abbrev=0 --tags)
+          echo "LATEST_TAG=$latestTag" >> "$GITHUB_OUTPUT"
       - run: echo "::error title=Valid git tags not found::$ERROR_MESSAGE"
         if: failure()
         env:
           ERROR_MESSAGE: |
             e.g. git tag -a v0.0.0 -m 'v0.0.0' $(git rev-list --max-parents=0 HEAD) && git push origin v0.0.0
-      - run: echo "::notice::Success."
+      - name: Build Changelog
+        id: github_release
         if: success()
+        uses: mikepenz/release-changelog-builder-action@v4.0.0-b02
+        with:
+          fromTag: ${{steps.check-tag.outputs.LATEST_TAG}}
+          toTag: ${{ github.ref }}
 
   # error-latest-tag:
   #   runs-on: ubuntu-latest
@@ -54,24 +58,24 @@ jobs:
   #         bash ./scripts/bump.sh $labels
   #       env:
   #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  build-changelog:
-    needs: 
-      - check-first-release
-    runs-on: ubuntu-latest
-    permissions: {}
-    if: success()
-    outputs:
-      changelog: ${{steps.github_release.outputs.changelog}}
-    steps:
+  # build-changelog:
+  #   needs: 
+  #     - check-first-release
+  #   runs-on: ubuntu-latest
+  #   permissions: {}
+  #   if: success()
+  #   outputs:
+  #     changelog: ${{steps.github_release.outputs.changelog}}
+  #   steps:
       # - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
       #   with:
       #     fetch-depth: 0
-      - name: Build Changelog
-        id: github_release
-        uses: mikepenz/release-changelog-builder-action@v4.0.0-b02
-        with:
-          fromTag: ${{needs.check-first-release.outputs.latestTag}}
-          toTag: ${{ github.ref }}
+      # - name: Build Changelog
+      #   id: github_release
+      #   uses: mikepenz/release-changelog-builder-action@v4.0.0-b02
+      #   with:
+      #     fromTag: ${{needs.check-first-release.outputs.latestTag}}
+      #     toTag: ${{ github.ref }}
         # env:
         #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   bump-version:
@@ -87,7 +91,8 @@ jobs:
       - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
         with:
           aqua_version: v2.8.0
-      - run: |
+      - name: Check bump level
+        run: |
           set -eu
           changelog="${{needs.build-changelog.outputs.changelog}}"
           search_features="## 🚀 Features"
@@ -102,7 +107,8 @@ jobs:
           fi
 
           echo "level=$release_level" >> $GITHUB_ENV
-      - run: echo "releaseVersion=$(svu $level)" >> $GITHUB_OUTPUT
+      - name: Set release version for output.
+        run: echo "releaseVersion=$(svu $level)" >> $GITHUB_OUTPUT
         id: set-version
   check-milestone:
     needs: 
@@ -117,10 +123,8 @@ jobs:
         with:
           app_id: ${{secrets.gh_app_id}}
           private_key: ${{secrets.gh_app_private_key}}
-      - run: gh label create 'Release' -f --description 'Release Pull Request.' --color E4E669
-        env:
-          GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
-      - run: |
+      - name: Check to see if milestones exist and create or reopen them
+        run: |
           set -eu
           milestones=$(gh api -X GET /repos/${GITHUB_REPOSITORY}/milestones -f state=all)
           if ! $(echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\")"); then
@@ -138,9 +142,7 @@ jobs:
       - bump-version
       - check-milestone
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
+    permissions: {}
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
       - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
@@ -152,7 +154,8 @@ jobs:
         with:
           app_id: ${{secrets.gh_app_id}}
           private_key: ${{secrets.gh_app_private_key}}
-      - run: |
+      - name: Generate pull request
+        run: |
           set -eu
           ghcp -v
           SAME_PR_COUNT=$(gh pr list -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --json 'id' --jq '.[] | length')
