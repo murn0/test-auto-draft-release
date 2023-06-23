@@ -117,7 +117,7 @@ jobs:
           private_key: ${{secrets.gh_app_private_key}}
       - run: |
           set -eu
-          gh label create 'Release' -f --description 'Release Pull Request.' --color E4E669
+          # gh label create 'Release' -f --description 'Release Pull Request.' --color E4E669
           milestones=$(gh api -X GET /repos/${GITHUB_REPOSITORY}/milestones -f state=all)
           if ! $(echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\")"); then
             gh api -X POST repos/${GITHUB_REPOSITORY}/milestones -f title=$RELEASE_VERSION
