@@ -115,7 +115,7 @@ jobs:
       - bump-version
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: Generate token
         id: generate_token
@@ -134,7 +134,8 @@ jobs:
             gh api -X PATCH repos/${GITHUB_REPOSITORY}/milestones/${milestone_number} -f state=open
           fi
         env:
-          GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
+          # GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
+          GITHUB_TOKEN: ${{github.token}}
           RELEASE_VERSION: ${{needs.bump-version.outputs.releaseVersion}}
   generate-pull-request:
     needs: 
