@@ -117,7 +117,7 @@ jobs:
           private_key: ${{secrets.gh_app_private_key}}
       - run: |
           set -eu
-          gh label create Release -f --description "Release Pull Request." --color #e4e669
+          gh label create 'Release' -f --description 'Release Pull Request.' --color E4E669
           milestones=$(gh api -X GET /repos/${GITHUB_REPOSITORY}/milestones -f state=all)
           if ! $(echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\")"); then
             gh api -X POST repos/${GITHUB_REPOSITORY}/milestones -f title=$RELEASE_VERSION
@@ -152,12 +152,13 @@ jobs:
           set -eu
           ghcp -v
           SAME_PR_COUNT=$(gh pr list -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --json 'id' --jq '.[] | length')
+          RELEASE_DATE=$(date +"%Y-%m-%dT%H:%M:%S%z")
           if [[ -z "$SAME_PR_COUNT" ]]; then
             ghcp empty-commit -r $GITHUB_REPOSITORY -b release/$RELEASE_VERSION -m 'chore: empty commit to open follow up pull request'
-            gh pr create -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --title "$RELEASE_VERSION" --body "$CHANGELOG" --reviewer murn0 --milestone "$RELEASE_VERSION" --label Release
+            gh pr create -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --title "$RELEASE_VERSION $RELEASE_DATE" --body "$CHANGELOG" --reviewer murn0 --milestone "$RELEASE_VERSION" --label Release
           else
             SAME_PR_NUMBER=$(gh pr list -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --json 'number' --jq '.[].number')
-            gh pr edit $SAME_PR_NUMBER --title "$RELEASE_VERSION [edit]" --body "$CHANGELOG" --milestone "$RELEASE_VERSION"
+            gh pr edit $SAME_PR_NUMBER --title "$RELEASE_VERSION $RELEASE_DATE" --body "$CHANGELOG" --milestone "$RELEASE_VERSION"
           fi
         env:
           GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
