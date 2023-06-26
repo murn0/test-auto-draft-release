@@ -17,7 +17,7 @@ jobs:
           toTag: ${{ github.ref }}
           configurationJson: |
             {
-              "template": "${{env.CHANGELOG_TEMPLATE}}",
+              "template": "[Milestone](https://github.com/#{{OWNER}}/#{{REPO}}/pulls?q=is%3Apr+milestone%3Av0.0.0) | [Issues](https://github.com/#{{OWNER}}/#{{REPO}}/issues?q=is%3Aissue+milestone%3Av0.0.0) | https://github.com/aquaproj/aqua/compare/v0.0.0...v0.1.0\n#{{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n#{{UNCATEGORIZED}}\n</details>",
               "categories": [
                 {
                     "title": "## 💬 Other",
@@ -29,17 +29,6 @@ jobs:
                 }
               ]
             }
-        env:
-          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CHANGELOG_TEMPLATE: |-
-            **Epics**
-            #{{CHANGELOG}}
-            
-            <details>
-            <summary>Uncategorized</summary>
-            
-            #{{UNCATEGORIZED}}
-            </details>
       - run: echo "${{steps.github_release.outputs.changelog}}"
   # run-ghcp:
   #   needs: build-changelog
