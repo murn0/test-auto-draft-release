@@ -29,6 +29,19 @@ jobs:
         with:
           fromTag: ${{steps.check-tag.outputs.LATEST_TAG}}
           toTag: ${{ github.ref }}
+          configurationJson: |
+            {
+              template: "${{env.CHANGELOG_TEMPLATE}}"
+            }
+        env:
+          CHANGELOG_TEMPLATE: |-
+            #{{CHANGELOG}}
+            
+            <details>
+            <summary>Uncategorized</summary>
+            
+            #{{UNCATEGORIZED}}
+            </details>
 
   bump-version:
     needs: 
