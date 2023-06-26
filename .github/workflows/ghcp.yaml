@@ -21,6 +21,9 @@ jobs:
             }
         env:
           CHANGELOG_TEMPLATE: |-
+            [Milestone](https://github.com/${{github.repository}}/pulls?q=is%3Apr+milestone%3Av0.0.0) | [Issues](https://github.com/${{github.repository}}/issues?q=is%3Aissue+milestone%3Av0.0.0) | https://github.com/aquaproj/aqua/compare/v0.0.0...v0.1.0
+
+            
             #{{CHANGELOG}}
             
             <details>
@@ -28,7 +31,7 @@ jobs:
             
             #{{UNCATEGORIZED}}
             </details>
-      - run: echo ${{steps.github_release.outputs.changelog}}
+      - run: ${{steps.github_release.outputs.changelog}}
   # run-ghcp:
   #   needs: build-changelog
   #   runs-on: ubuntu-latest
