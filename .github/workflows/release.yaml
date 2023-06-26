@@ -31,17 +31,8 @@ jobs:
           toTag: ${{ github.ref }}
           configurationJson: |
             {
-              template: "${{env.CHANGELOG_TEMPLATE}}"
+              template: ""
             }
-        env:
-          CHANGELOG_TEMPLATE: |-
-            #{{CHANGELOG}}
-            
-            <details>
-            <summary>Uncategorized</summary>
-            
-            #{{UNCATEGORIZED}}
-            </details>
 
   bump-version:
     needs: 
