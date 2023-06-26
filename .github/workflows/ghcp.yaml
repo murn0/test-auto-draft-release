@@ -17,7 +17,8 @@ jobs:
           toTag: ${{ github.ref }}
           configurationJson: |
             {
-              "template": "[Milestone](https://github.com/#{{OWNER}}/#{{REPO}}/pulls?q=is%3Apr+milestone%3Av0.0.0) | [Issues](https://github.com/#{{OWNER}}/#{{REPO}}/issues?q=is%3Aissue+milestone%3Av0.0.0) | https://github.com/aquaproj/aqua/compare/v0.0.0...v0.1.0\n#{{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n#{{UNCATEGORIZED}}\n</details>",
+              "template": "[Issues](https://github.com/#{{OWNER}}/#{{REPO}}/issues?q=is%3Aissue+created%3A#{{FROM_TAG_DATE}}..#{{TO_TAG_DATE}}) | https://github.com/aquaproj/aqua/compare/${{github.repository}}...v0.1.0\n#{{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n#{{UNCATEGORIZED}}\n</details>",
+              "pr_template": "- #{{TITLE}}\n   - ##{{NUMBER}} #{{MILESTONE}}",
               "categories": [
                 {
                     "title": "## 💬 Other",
