@@ -20,7 +20,7 @@ jobs:
               template: "**Epics**\n#{{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n#{{UNCATEGORIZED}}\n</details>"
             }
         env:
-          GITHUB_TOKEN: ${{github.token}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHANGELOG_TEMPLATE: |-
             **Epics**
             #{{CHANGELOG}}
