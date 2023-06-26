@@ -17,7 +17,7 @@ jobs:
           toTag: ${{ github.ref }}
           configurationJson: |
             {
-              "template": "**Epics**\n#{{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n#{{UNCATEGORIZED}}\n</details>",
+              "template": "${{env.CHANGELOG_TEMPLATE}}",
               "categories": [
                 {
                     "title": "## 💬 Other",
