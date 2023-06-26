@@ -17,17 +17,34 @@ jobs:
           toTag: ${{ github.ref }}
           configurationJson: |
             {
-              "template": "[Issues](https://github.com/#{{OWNER}}/#{{REPO}}/issues?q=is%3Aissue+created%3A#{{FROM_TAG_DATE}}..#{{TO_TAG_DATE}}) | https://github.com/aquaproj/aqua/compare/${{github.repository}}...v0.1.0\n#{{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n#{{UNCATEGORIZED}}\n</details>",
-              "pr_template": "- #{{TITLE}}\n   - ##{{NUMBER}} #{{MILESTONE}}",
+              "template": "#{{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n#{{UNCATEGORIZED}}\n</details>",
               "categories": [
-                {
-                    "title": "## 💬 Other",
-                    "labels": ["other"]
-                },
-                {
-                    "title": "## 📦 Dependencies",
-                    "labels": ["dependencies"]
-                }
+                  {
+                      "title": "## ⚠️ Breaking changes",
+                      "labels": ["breaking change"]
+                  },
+                  {
+                      "title": "## Features",
+                      "labels": [
+                        "feature",
+                        "enhancement"
+                      ]
+                  },
+                  {
+                      "title": "## Fixes",
+                      "labels": [
+                        "fix",
+                        "bug"
+                      ]
+                  },
+                  {
+                      "title": "## Tests",
+                      "labels": ["test"]
+                  },
+                  {
+                      "title": "## Others",
+                      "labels": []
+                  }
               ]
             }
       - run: echo "${{steps.github_release.outputs.changelog}}"
