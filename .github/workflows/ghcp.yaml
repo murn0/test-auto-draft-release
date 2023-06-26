@@ -28,6 +28,7 @@ jobs:
             
             #{{UNCATEGORIZED}}
             </details>
+      - run: echo ${{steps.github_release.outputs.changelog}}
   # run-ghcp:
   #   needs: build-changelog
   #   runs-on: ubuntu-latest
