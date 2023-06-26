@@ -17,9 +17,10 @@ jobs:
           toTag: ${{ github.ref }}
           configurationJson: |
             {
-              template: "#{{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n#{{OWNER}}\n#{{UNCATEGORIZED}}\n</details>"
+              template: "**Epics**\n#{{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n#{{UNCATEGORIZED}}\n</details>"
             }
         env:
+          GITHUB_TOKEN: ${{github.token}}
           CHANGELOG_TEMPLATE: |-
             **Epics**
             #{{CHANGELOG}}
@@ -29,7 +30,7 @@ jobs:
             
             #{{UNCATEGORIZED}}
             </details>
-      - run: "${{steps.github_release.outputs.changelog}}"
+      - run: echo "${{steps.github_release.outputs.changelog}}"
   # run-ghcp:
   #   needs: build-changelog
   #   runs-on: ubuntu-latest
