@@ -3,6 +3,10 @@ name: Create release pull request
 on: workflow_dispatch
 permissions: {}
 jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: GitHubSecurityLab/actions-permissions/monitor@v1
   build-changelog:
     runs-on: ubuntu-latest
     permissions: {}
