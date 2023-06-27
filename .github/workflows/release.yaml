@@ -8,6 +8,7 @@ jobs:
     permissions: {}
     outputs:
       changelog: ${{steps.github_release.outputs.changelog}}
+      LATEST_TAG: ${{steps.check-tag.outputs.LATEST_TAG}}
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
         with:
@@ -37,7 +38,7 @@ jobs:
     permissions: {}
     if: success()
     outputs:
-      releaseVersion: ${{steps.set-version.outputs.releaseVersion}}
+      RELEASE_VERSION: ${{steps.set-version.outputs.RELEASE_VERSION}}
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
       - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
@@ -61,15 +62,18 @@ jobs:
           echo "level=$release_level" >> $GITHUB_ENV
       - name: Set release version for output.
         id: set-version
-        run: echo "releaseVersion=$(svu $level)" >> $GITHUB_OUTPUT
+        run: echo "RELEASE_VERSION=$(svu $level)" >> $GITHUB_OUTPUT
   check-milestone:
     needs: 
       - bump-version
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    outputs:
+      MILESTONE_NUMBER: ${{steps.milestone.outputs.MILESTONE_NUMBER}}
     steps:
       - name: Check to see if milestones exist and create or reopen them
+        id: milestone
         run: |
           set -eu
           milestones=$(gh api -X GET /repos/${GITHUB_REPOSITORY}/milestones -f state=all)
@@ -77,11 +81,12 @@ jobs:
             gh api -X POST repos/${GITHUB_REPOSITORY}/milestones -f title=$RELEASE_VERSION
           elif $(echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\" and .state == \"closed\")"); then
             milestone_number=$(echo "${milestones}" | jq ". | map(select(.title == \"$RELEASE_VERSION\")) | first | .number")
+            echo "MILESTONE_NUMBER=$milestone_number" >> $GITHUB_OUTPUT
             gh api -X PATCH repos/${GITHUB_REPOSITORY}/milestones/${milestone_number} -f state=open
           fi
         env:
           GITHUB_TOKEN: ${{github.token}}
-          RELEASE_VERSION: ${{needs.bump-version.outputs.releaseVersion}}
+          RELEASE_VERSION: ${{needs.bump-version.outputs.RELEASE_VERSION}}
   generate-pull-request:
     needs: 
       - build-changelog
@@ -120,8 +125,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
           CHANGELOG: |-
-            
+            [Milestone](https://github.com/$GITHUB_REPOSITORY/milestone/${{needs.check-milestone.outputs.MILESTONE_NUMBER}}) | https://github.com/aquaproj/aqua/compare/${{needs.build-changelog.outputs.LATEST_TAG}}...${{needs.bump-version.outputs.RELEASE_VERSION}}
+
             ${{needs.build-changelog.outputs.changelog}}
 
             ${{env.CURRENT_DATETIME}}
-          RELEASE_VERSION: ${{needs.bump-version.outputs.releaseVersion}}
+          RELEASE_VERSION: ${{needs.bump-version.outputs.RELEASE_VERSION}}
