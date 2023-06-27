@@ -127,7 +127,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
           CHANGELOG: |-
-            [Milestone](https://github.com/${{github.repository}}/milestone/${{needs.check-milestone.outputs.MILESTONE_NUMBER}}) | https://github.com/${{github.repository}}/compare/${{needs.build-changelog.outputs.LATEST_TAG}}...${{needs.bump-version.outputs.RELEASE_VERSION}}
+            [Pull Requests](https://github.com/${{github.repository}}/pulls?q=is%3Apr+milestone%3A${{needs.bump-version.outputs.RELEASE_VERSION}}) | [Issues](https://github.com/${{github.repository}}/issues?q=is%3Aissue+milestone%3A${{needs.bump-version.outputs.RELEASE_VERSION}}) | [Milestone](https://github.com/${{github.repository}}/milestone/${{needs.check-milestone.outputs.MILESTONE_NUMBER}}) | https://github.com/${{github.repository}}/compare/${{needs.build-changelog.outputs.LATEST_TAG}}...${{needs.bump-version.outputs.RELEASE_VERSION}}
             ---
 
 
