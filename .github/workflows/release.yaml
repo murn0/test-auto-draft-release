@@ -112,7 +112,7 @@ jobs:
           TZ: 'Asia/Tokyo'
       - name: Set milestone number
         run: |
-          milestone_number=$(gh api -X GET /repos/${GITHUB_REPOSITORY}/milestones -f state=all | jq ". | map(select(.title == \"${RELEASE_VERSION}\")) | first | .number")
+          milestone_number=$(gh api -X GET /repos/${{github.repository}}/milestones -f state=all | jq ". | map(select(.title == \"${{needs.bump-version.outputs.RELEASE_VERSION}}\")) | first | .number")
           echo $milestone_number
           echo "MILESTONE_NUMBER=$milestone_number" >> $GITHUB_ENV
         env:
