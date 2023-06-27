@@ -125,9 +125,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
           CHANGELOG: |-
-            [Milestone](https://github.com/$GITHUB_REPOSITORY/milestone/${{needs.check-milestone.outputs.MILESTONE_NUMBER}}) | https://github.com/aquaproj/aqua/compare/${{needs.build-changelog.outputs.LATEST_TAG}}...${{needs.bump-version.outputs.RELEASE_VERSION}}
+
+            [Milestone](https://github.com/${{github.repository}}/milestone/${{needs.check-milestone.outputs.MILESTONE_NUMBER}}) | https://github.com/${{github.repository}}/compare/${{needs.build-changelog.outputs.LATEST_TAG}}...${{needs.bump-version.outputs.RELEASE_VERSION}}
+            ---
+
 
             ${{needs.build-changelog.outputs.changelog}}
 
-            ${{env.CURRENT_DATETIME}}
+            ---
+            > **Note**
+            > This release was published on ${{env.CURRENT_DATETIME}}
           RELEASE_VERSION: ${{needs.bump-version.outputs.RELEASE_VERSION}}
