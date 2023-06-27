@@ -127,7 +127,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
           CHANGELOG: |-
-
             [Milestone](https://github.com/${{github.repository}}/milestone/${{needs.check-milestone.outputs.MILESTONE_NUMBER}}) | https://github.com/${{github.repository}}/compare/${{needs.build-changelog.outputs.LATEST_TAG}}...${{needs.bump-version.outputs.RELEASE_VERSION}}
             ---
 
