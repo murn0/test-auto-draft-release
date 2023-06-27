@@ -29,10 +29,6 @@ jobs:
         with:
           fromTag: ${{steps.check-tag.outputs.LATEST_TAG}}
           toTag: ${{ github.ref }}
-          configurationJson: |
-            {
-              template: ""
-            }
 
   bump-version:
     needs: 
@@ -120,6 +116,7 @@ jobs:
             SAME_PR_NUMBER=$(gh pr list -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --json 'number' --jq '.[].number')
             gh pr edit $SAME_PR_NUMBER --title "$RELEASE_VERSION ${{env.CURRENT_DATETIME}}" --body "$CHANGELOG" --milestone "$RELEASE_VERSION" --add-label Release
           fi
+          gh release create $RELEASE_VERSION --draft --notes "$CHANGELOG" --target ${{ github.ref }} --title $RELEASE_VERSION
         env:
           GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
           CHANGELOG: ${{needs.build-changelog.outputs.changelog}}
