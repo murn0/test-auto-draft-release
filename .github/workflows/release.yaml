@@ -111,7 +111,10 @@ jobs:
         env:
           TZ: 'Asia/Tokyo'
       - name: Set milestone number
-        run: echo "MILESTONE_NUMBER=$(gh api -X GET /repos/$GITHUB_REPOSITORY/milestones -f state=all | jq ". | map(select(.title == \"$RELEASE_VERSION\")) | first | .number")" >> $GITHUB_ENV
+        run: |
+          milestone_number=gh api -X GET /repos/${GITHUB_REPOSITORY}/milestones -f state=all | jq ". | map(select(.title == \"${RELEASE_VERSION}\")) | first | .number"
+          echo $milestone_number
+          echo "MILESTONE_NUMBER=$milestone_number" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{github.token}}
       - name: Generate pull request
