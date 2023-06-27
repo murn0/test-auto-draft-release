@@ -81,9 +81,10 @@ jobs:
             gh api -X POST repos/${GITHUB_REPOSITORY}/milestones -f title=$RELEASE_VERSION
           elif $(echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\" and .state == \"closed\")"); then
             milestone_number=$(echo "${milestones}" | jq ". | map(select(.title == \"$RELEASE_VERSION\")) | first | .number")
-            echo "MILESTONE_NUMBER=$milestone_number" >> $GITHUB_OUTPUT
             gh api -X PATCH repos/${GITHUB_REPOSITORY}/milestones/${milestone_number} -f state=open
           fi
+
+          echo "MILESTONE_NUMBER=$milestone_number" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{github.token}}
           RELEASE_VERSION: ${{needs.bump-version.outputs.RELEASE_VERSION}}
