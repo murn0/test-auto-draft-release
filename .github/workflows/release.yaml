@@ -69,6 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      issues: write
     outputs:
       MILESTONE_NUMBER: ${{steps.milestone.outputs.MILESTONE_NUMBER}}
     steps:
