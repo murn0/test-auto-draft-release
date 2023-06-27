@@ -3,10 +3,6 @@ name: Create release pull request
 on: workflow_dispatch
 permissions: {}
 jobs:
-  job1:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: GitHubSecurityLab/actions-permissions/monitor@v1
   build-changelog:
     runs-on: ubuntu-latest
     permissions: {}
@@ -76,6 +72,7 @@ jobs:
     outputs:
       MILESTONE_NUMBER: ${{steps.milestone.outputs.MILESTONE_NUMBER}}
     steps:
+      - uses: GitHubSecurityLab/actions-permissions/monitor@v1
       - name: Check to see if milestones exist and create or reopen them
         id: milestone
         run: |
