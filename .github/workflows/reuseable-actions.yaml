@@ -1,5 +1,5 @@
 ---
-name: ghcp test
+name: reuseable actions test
 on: workflow_dispatch
 permissions: {}
 jobs:
