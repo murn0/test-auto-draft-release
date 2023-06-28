@@ -1,0 +1,9 @@
+---
+name: ghcp test
+on: workflow_dispatch
+permissions: {}
+jobs:
+  build-changelog:
+    uses: murn0/generate-release-workflow/.github/workflows/release-pull-request.yaml@main
+    permissions: {}
+    
