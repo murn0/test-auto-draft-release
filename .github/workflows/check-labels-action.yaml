@@ -1,0 +1,30 @@
+name: check-labels
+on:
+  workflow_call:
+    inputs:
+      REVIEWERS:
+        required: false
+        type: string
+      LABELS:
+        required: false
+        type: string
+
+permissions: {}
+
+jobs:
+  check-labels:
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - run: |
+          labels=${{inputs.LABELS}}
+          # カンマで分割して空白を除去して配列に格納
+          IFS=',' read -r -a words <<< "$(echo "$labels" | tr -d '[:space:]')"
+
+          # 配列の要素を改行して表示
+          for word in "${words[@]}"; do
+              echo "$word"
+              if ! $(gh label list --repo murn0/test-auto-draft-release --json name | jq ". | any(.name == \"${word}\")"); then
+                  echo "${word}は存在しないよ！"
+              fi
+          done
