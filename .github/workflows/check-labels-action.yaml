@@ -22,7 +22,7 @@ jobs:
     steps:
       # - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
       - run: |
-          labels="${{inputs.LABELS}}"
+          labels="Release, test   , sample1   "
           # カンマで分割して空白を除去して配列に格納
           IFS=',' read -r -a labels_array <<< "$(echo "$labels" | tr -d '[:space:]')"
 
