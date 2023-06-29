@@ -9,14 +9,13 @@ on:
         required: false
         type: string
       LABELS:
-        default: "Release test"
         required: false
         type: string
 
 permissions: {}
 
 env:
-  label_name: ${{inputs.LABELS || 'Release test'}}
+  label_name: ${{inputs.LABELS || 'Release, test'}}
 
 jobs:
   check-labels:
