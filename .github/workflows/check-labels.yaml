@@ -1,0 +1,9 @@
+---
+name: check label test
+on: workflow_dispatch
+permissions: {}
+jobs:
+  check-labels:
+    uses: murn0/generate-release-workflow/.github/workflows/check-labels.yaml@feat/check-label
+    with:
+      LABELS: "Release, test"
