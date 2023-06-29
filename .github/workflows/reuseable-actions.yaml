@@ -5,7 +5,8 @@ permissions: {}
 jobs:
   build-changelog:
     uses: murn0/generate-release-workflow/.github/workflows/release-pull-request.yaml@main
-    permissions: {}
+    permissions:
+      issues: write # For check-milestone action.
     with:
 #       changelog_config_json: |
 #         {
