@@ -6,7 +6,7 @@ jobs:
   build-changelog:
     uses: murn0/generate-release-workflow/.github/workflows/release-pull-request.yaml@main
     permissions: {}
-#     with:
+    with:
 #       changelog_config_json: |
 #         {
 #           "template": "#{{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n#{{UNCATEGORIZED}}\n</details>",
@@ -21,3 +21,5 @@ jobs:
 #             }
 #           ]
 #         }
+      major_title: "## ⚠️ Breaking Changes"
+      minor_title: "## 🚀 Features"
