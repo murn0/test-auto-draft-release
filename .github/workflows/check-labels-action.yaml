@@ -19,13 +19,13 @@ jobs:
       - run: |
           labels=${{inputs.LABELS}}
           # カンマで分割して空白を除去して配列に格納
-          IFS=',' read -r -a words <<< "$(echo "$labels" | tr -d '[:space:]')"
+          IFS=',' read -r -a labels <<< "$(echo "$labels" | tr -d '[:space:]')"
 
           # 配列の要素を改行して表示
-          for word in "${words[@]}"; do
-              echo "$word"
-              if ! $(gh label list --repo murn0/test-auto-draft-release --json name | jq ". | any(.name == \"${word}\")"); then
-                  echo "${word}は存在しないよ！"
+          for label in "${labels[@]}"; do
+              echo "$label"
+              if ! $(gh label list --json name | jq ". | any(.name == \"${label}\")"); then
+                  echo "${label}は存在しないよ！"
               fi
           done
     env:
