@@ -4,6 +4,7 @@ on: workflow_dispatch
 permissions: {}
 jobs:
   check-labels:
-    uses: murn0/generate-release-workflow/.github/workflows/check-labels.yaml@feat/check-label
+#     uses: murn0/generate-release-workflow/.github/workflows/check-labels.yaml@feat/check-label
+    uses: ./.github/workflows/check-labels-action.yaml
     with:
       LABELS: "Release, test"
