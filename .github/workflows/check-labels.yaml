@@ -7,5 +7,3 @@ jobs:
     uses: murn0/generate-release-workflow/.github/workflows/check-labels.yaml@feat/check-label
     with:
       LABELS: "Release, test"
-    secrets:
-      GH_TOKEN: ${{github.token}}
