@@ -26,11 +26,11 @@ jobs:
       - run: |
           labels=${{env.label_name}}
           # カンマで分割して空白を除去して配列に格納
-          IFS=',' read -r -a labels_array <<< "$(echo "$labels" | tr -d '[:space:]')"
+          IFS=',' read -r -a words <<< "$(echo "$labels" | tr -d '[:space:]')"
 
           # 配列の要素を改行して表示
-          for label in "${labels_array[@]}"; do
-              echo "$label"
+          for word in "${words[@]}"; do
+              echo "$word"
               # if ! $(gh label list --json name | jq ". | any(.name == \"${label}\")"); then
               #     echo "${label}は存在しないよ！"
               # fi
