@@ -1,11 +1,15 @@
 name: check-labels
 on:
+  push:
+    paths:
+      - .github/workflows/check-labels-action.yaml
   workflow_call:
     inputs:
       REVIEWERS:
         required: false
         type: string
       LABELS:
+        default: "Release test"
         required: false
         type: string
 
@@ -24,9 +28,9 @@ jobs:
           # 配列の要素を改行して表示
           for label in "${labels[@]}"; do
               echo "$label"
-              if ! $(gh label list --json name | jq ". | any(.name == \"${label}\")"); then
-                  echo "${label}は存在しないよ！"
-              fi
+              # if ! $(gh label list --json name | jq ". | any(.name == \"${label}\")"); then
+              #     echo "${label}は存在しないよ！"
+              # fi
           done
     env:
       GITHUB_TOKEN: ${{github.token}}
