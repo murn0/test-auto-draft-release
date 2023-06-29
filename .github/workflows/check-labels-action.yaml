@@ -23,7 +23,7 @@ jobs:
     permissions: {}
     steps:
       - run: |
-          labels=${{env.label_name}}
+          labels="${{env.label_name}}"
           # カンマで分割して空白を除去して配列に格納
           IFS=',' read -r -a words <<< "$(echo "$labels" | tr -d '[:space:]')"
           echo $words
