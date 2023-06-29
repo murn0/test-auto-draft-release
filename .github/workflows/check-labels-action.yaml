@@ -32,8 +32,8 @@ jobs:
               echo "$label_name"
               if ! $(gh label list -R "$GITHUB_REPOSITORY" --json name | jq ". | any(.name == \"${label_name}\")"); then
                   echo "${label_name}は存在しないよ！"
-                  label_option+="--label ${label_name} "
               fi
+              label_option+="--label ${label_name} "
           done
 
           echo $label_option
