@@ -28,3 +28,5 @@ jobs:
                   echo "${word}は存在しないよ！"
               fi
           done
+    env:
+      GITHUB_TOKEN: ${{github.token}}
