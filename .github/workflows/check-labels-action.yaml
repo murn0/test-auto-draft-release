@@ -21,7 +21,7 @@ jobs:
     steps:
       # - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
       - run: |
-          label_names="good first issues, Release, test   , sample1   "
+          label_names="   good first issue, Release, test   , sample1   "
           # カンマで分割して配列に格納
           # IFS=',' read -r -a labels_array <<< "$(echo "$labels" | tr -d '[:space:]')"
           IFS=',' read -r -a labels <<< "$label_names"
@@ -32,6 +32,7 @@ jobs:
               echo "$label"
               # 不要な先頭および末尾の空白を削除しつつ表示
               label_name=$(echo "$label" | awk '{$1=$1};1')
+              echo $label_name
               if ! $(gh label list -R "$GITHUB_REPOSITORY" --json name | jq ". | any(.name == \"${label_name}\")"); then
                   echo "${label_name}は存在しないよ！"
               fi
