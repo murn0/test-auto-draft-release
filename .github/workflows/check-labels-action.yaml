@@ -11,7 +11,6 @@ on:
       LABELS:
         required: false
         type: string
-        default: 'Release, test, sample1'
 
 permissions: {}
 
@@ -22,18 +21,21 @@ jobs:
     steps:
       # - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
       - run: |
-          labels="Release, test   , sample1   "
-          # カンマで分割して空白を除去して配列に格納
-          IFS=',' read -r -a labels_array <<< "$(echo "$labels" | tr -d '[:space:]')"
+          label_names="good first issues, Release, test   , sample1   "
+          # カンマで分割して配列に格納
+          # IFS=',' read -r -a labels_array <<< "$(echo "$labels" | tr -d '[:space:]')"
+          IFS=',' read -r -a labels <<< "$label_names"
 
           label_option=''
           # 配列の要素を改行して表示
-          for label_name in "${labels_array[@]}"; do
-              echo "$label_name"
+          for label in "${labels[@]}"; do
+              echo "$label"
+              # 不要な先頭および末尾の空白を削除しつつ表示
+              label_name=$(echo "$label" | awk '{$1=$1};1')
               if ! $(gh label list -R "$GITHUB_REPOSITORY" --json name | jq ". | any(.name == \"${label_name}\")"); then
                   echo "${label_name}は存在しないよ！"
               fi
-              label_option+="--label ${label_name} "
+              label_option+="--label '${label_name}' "
           done
 
           echo $label_option
