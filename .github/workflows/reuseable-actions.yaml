@@ -24,8 +24,8 @@ jobs:
 #         }
       major_title: "## ⚠️ Breaking Changes"
       minor_title: "## 🚀 Features"
-      reviewers: "murn0"
-      labels: "Release, minor"
+      # reviewers: "murn0"
+      # labels: "Release, minor"
     secrets:
       gh_app_id: ${{secrets.GH_APP_ID}}
       gh_app_private_key: ${{secrets.GH_APP_PRIVATE_KEY}}
