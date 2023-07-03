@@ -27,6 +27,9 @@ jobs:
       - name: Generate pull request
         run: |
           set -eu
+
+          echo $GITHUB_REF
+          echo GITHUB_REF_NAME
           
           gh release create "${${{github.event.pull_request.head.ref}}#release/-}" --draft --notes "${{github.event.pull_request.body}}" --target ${{ github.sha }} --title "Release: ${${{github.event.pull_request.head.ref}}#release/-}"
         env:
