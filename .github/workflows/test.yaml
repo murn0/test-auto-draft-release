@@ -16,8 +16,18 @@ jobs:
     runs-on: ubuntu-latest
     permissions: {}
     if: |
-      github.event.pull_request.merged == true
+      github.event.pull_request.merged == true && startsWith(github.event.pull_request.head, 'release/v')
     steps:
-      - run: |
-          echo "SHA is $GITHUB_SHA"
-          echo "REF is $GITHUB_REF"
+      - name: Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@b62528385c34dbc9f38e5f4225ac829252d1ea92 # v1.8.0
+        with:
+          app_id: ${{secrets.gh_app_id}}
+          private_key: ${{secrets.gh_app_private_key}}
+      - name: Generate pull request
+        run: |
+          set -eu
+          
+          gh release create "${{github.event.pull_request.title}}" --draft --notes "${{github.event.pull_request.body}}" --target ${{ github.sha }} --title "Release: ${{github.event.pull_request.title}}"
+        env:
+          GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
