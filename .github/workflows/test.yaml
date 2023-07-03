@@ -1,6 +1,9 @@
 ---
 name: test
 on:
+  push:
+    paths:
+      - .github/workflows/test.yaml
   pull_request:
     branches:
       - main
@@ -11,7 +14,11 @@ jobs:
   init:
     runs-on: ubuntu-latest
     steps:
-      - run: cat $GITHUB_EVENT_PATH
+      - run: |
+          # cat $GITHUB_EVENT_PATH
+          title=${{github.ref}}
+
+          echo "title is $title"
   create-release-draft:
     runs-on: ubuntu-latest
     permissions: {}
