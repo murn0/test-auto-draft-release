@@ -4,7 +4,7 @@ on: workflow_dispatch
 permissions: {}
 jobs:
   build-changelog:
-    uses: murn0/generate-release-workflow/.github/workflows/release-pull-request.yaml@feat/add-reviewer
+    uses: murn0/generate-release-workflow/.github/workflows/release-pull-request.yaml@main
     permissions:
       issues: write # For check-milestone action.
     with:
