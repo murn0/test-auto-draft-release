@@ -12,7 +12,7 @@ on:
 permissions: {}
 jobs:
   create-release-draft:
-    uses: murn0/generate-release-workflow/.github/workflows/release.yaml@feat/generate-release.yaml
+    uses: murn0/generate-release-workflow/.github/workflows/release.yaml@main
     permissions: {}
     if: |
       github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
