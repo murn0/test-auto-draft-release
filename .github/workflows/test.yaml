@@ -5,7 +5,7 @@ on:
     branches:
       - main
     types:
-      - labeled
+      - closed
 permissions: {}
 jobs:
   init:
@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions: {}
     if: |
-      startsWith(github.event.label.name, 'Release')
+      github.event.pull_request.merged == true
     steps:
       - run: |
           echo "SHA is $GITHUB_SHA"
