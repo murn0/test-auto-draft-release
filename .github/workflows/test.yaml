@@ -8,6 +8,10 @@ on:
       - labeled
 permissions: {}
 jobs:
+  init:
+    runs-on: ubuntu-latest
+    steps:
+      - run: cat $GITHUB_EVENT_PATH
   create-release-draft:
     runs-on: ubuntu-latest
     permissions: {}
