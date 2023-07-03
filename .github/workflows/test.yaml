@@ -28,9 +28,10 @@ jobs:
         run: |
           set -eu
 
-          echo $GITHUB_REF
-          echo GITHUB_REF_NAME
+          title=${${{github.event.pull_request.head.ref}}#release/-}
+
+          echo "title is $title"
           
-          gh release create "${${{github.event.pull_request.head.ref}}#release/-}" --draft --notes "${${{github.event.pull_request.body}}//\\/\\\\}" --target ${{ github.sha }} --title "Release: ${${{github.event.pull_request.head.ref}}#release/-}"
+          # gh release create "${${{github.event.pull_request.head.ref}}#release/-}" --draft --notes "${${{github.event.pull_request.body}}//\\/\\\\}" --target ${{ github.sha }} --title "Release: ${${{github.event.pull_request.head.ref}}#release/-}"
         env:
           GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
