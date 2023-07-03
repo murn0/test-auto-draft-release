@@ -16,9 +16,11 @@ jobs:
     steps:
       - run: |
           # cat $GITHUB_EVENT_PATH
-          title=${${{github.ref}}#refs/heads/}
+          title=${REF#refs/heads/}
 
           echo "title is $title"
+        env:
+          REF: ${{github.ref}}
   create-release-draft:
     runs-on: ubuntu-latest
     permissions: {}
