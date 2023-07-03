@@ -16,7 +16,7 @@ jobs:
     steps:
       - run: |
           # cat $GITHUB_EVENT_PATH
-          title=${${{github.ref}}#refs/heads/-}
+          title=${${{github.ref}}#refs/heads/}
 
           echo "title is $title"
   create-release-draft:
