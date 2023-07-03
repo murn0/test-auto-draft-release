@@ -4,7 +4,7 @@ on: workflow_dispatch
 permissions: {}
 jobs:
   build-changelog:
-    uses: murn0/generate-release-workflow/.github/workflows/release-pull-request.yaml@feat/check-label
+    uses: murn0/generate-release-workflow/.github/workflows/release-pull-request.yaml@feat/add-reviewer
     permissions:
       issues: write # For check-milestone action.
     with:
@@ -24,8 +24,8 @@ jobs:
 #         }
       major_title: "## ⚠️ Breaking Changes"
       minor_title: "## 🚀 Features"
-#       reviewers: "murn0"
-      labels: "Release, minor"
+      reviewers: "murn0"
+      labels: "Release, minor, sample1"
     secrets:
       gh_app_id: ${{secrets.GH_APP_ID}}
       gh_app_private_key: ${{secrets.GH_APP_PRIVATE_KEY}}
