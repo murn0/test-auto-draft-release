@@ -44,4 +44,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "inputs.input1 is ${{inputs.input1}}"
+          echo "inputs.input1 is ${{toJson(inputs.input1)}}"
