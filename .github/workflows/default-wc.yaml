@@ -1,0 +1,8 @@
+---
+name: reuseable actions test
+on: workflow_dispatch
+permissions: {}
+jobs:
+  default-wc:
+    uses: ./.github/workflows/default-test.yaml
+    # with:

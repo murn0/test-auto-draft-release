@@ -3,8 +3,8 @@ name: default test
 on:
   push:
     paths:
-      - .github/workflows/test.yaml
-  workflow_dispatch:
+      - .github/workflows/default-test.yaml
+  workflow_call:
     inputs:
       input1:
         required: false
