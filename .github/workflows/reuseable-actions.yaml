@@ -23,7 +23,7 @@ jobs:
 #           ]
 #         }
       major_title: "## ⚠️ Breaking Changes"
-      minor_title: "## 🚀 Features"
+      minor_title: "## Features"
       # reviewers: "murn0"
       # labels: "Release, minor"
     secrets:
