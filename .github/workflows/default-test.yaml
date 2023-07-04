@@ -45,4 +45,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          cat "${{inputs.input1}}"
+          echo "${{inputs.input1}}"
+          echo $INPUT_INPUT1
+          echo "${{inputs.input1.default}}"
