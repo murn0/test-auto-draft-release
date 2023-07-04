@@ -5,4 +5,18 @@ permissions: {}
 jobs:
   default-wc:
     uses: ./.github/workflows/default-test.yaml
-    # with:
+    with:
+      input1: |
+        {
+          "template": "#{{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n#{{UNCATEGORIZED}}\n</details>",
+          "categories": [
+            {
+                "title": "## 💬 Other",
+                "labels": ["other"]
+            },
+            {
+                "title": "## 📦 Dependencies",
+                "labels": ["dependencies"]
+            }
+          ]
+        }
