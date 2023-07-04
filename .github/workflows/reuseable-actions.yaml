@@ -8,20 +8,20 @@ jobs:
     permissions:
       issues: write # For check-milestone action.
     with:
-#       changelog_config_json: |
-#         {
-#           "template": "#{{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n#{{UNCATEGORIZED}}\n</details>",
-#           "categories": [
-#             {
-#                 "title": "## 💬 Other",
-#                 "labels": ["other"]
-#             },
-#             {
-#                 "title": "## 📦 Dependencies",
-#                 "labels": ["dependencies"]
-#             }
-#           ]
-#         }
+      changelog_config_json: |
+        {
+          "template": "#{{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n#{{UNCATEGORIZED}}\n</details>",
+          "categories": [
+            {
+                "title": "## 💬 Other",
+                "labels": ["other"]
+            },
+            {
+                "title": "## 📦 Dependencies",
+                "labels": ["dependencies"]
+            }
+          ]
+        }
       major_title: "## ⚠️ Breaking Changes"
       minor_title: "## Features"
       # reviewers: "murn0"
