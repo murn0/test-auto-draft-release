@@ -1,5 +1,5 @@
 ---
-name: reuseable actions test
+name: reuseable default actions test
 on: workflow_dispatch
 permissions: {}
 jobs:
