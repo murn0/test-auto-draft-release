@@ -1,0 +1,48 @@
+---
+name: default test
+on:
+  push:
+    paths:
+      - .github/workflows/test.yaml
+  workflow_dispatch:
+    inputs:
+      input1:
+        required: false
+        type: string
+        default: |
+          default: |
+            {
+              "categories": [
+                {
+                    "title": "## Features",
+                    "labels": [
+                      "feature",
+                      "enhancement"
+                    ]
+                },
+                {
+                    "title": "## Fixes",
+                    "labels": ["fix"]
+                },
+                {
+                    "title": "## Tests",
+                    "labels": ["test"]
+                }
+                {
+                    "title": "## Others",
+                    "labels": ["other"]
+                },
+                {
+                    "title": "## Dependencies",
+                    "labels": ["dependencies"]
+                }
+              ],
+              "template": "#{{CHANGELOG}}"
+            }
+permissions: {}
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          cat "${{inputs.input1}}"
