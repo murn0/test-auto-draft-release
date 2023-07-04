@@ -8,7 +8,7 @@ jobs:
     with:
       input1: |
         {
-          "template": "#{{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n#{{UNCATEGORIZED}}\n</details>",
+          "template": "#{{CHANGELOG}}",
           "categories": [
             {
                 "title": "## 💬 Other",

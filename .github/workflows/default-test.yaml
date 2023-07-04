@@ -45,3 +45,13 @@ jobs:
     steps:
       - run: |
           echo "inputs.input1 is ${{toJson(inputs.input1)}}"
+      - name: Build Changelog
+        id: github_release
+        if: success()
+        uses: mikepenz/release-changelog-builder-action@v4.0.0-b02
+        with:
+          fromTag: 'v0.0.0'
+          toTag: ${{ github.ref }}
+          configurationJson: |
+            ${{toJson(inputs.input1)}}
+      - run: echo "${{steps.github_release.outputs.changelog}}"
