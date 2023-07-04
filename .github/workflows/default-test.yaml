@@ -52,5 +52,5 @@ jobs:
           fromTag: 'v0.0.0'
           toTag: ${{ github.ref }}
           configurationJson: |
-            ${{toJson(inputs.input1)}}
+            ${{inputs.input1}}
       - run: echo "${{steps.github_release.outputs.changelog}}"
