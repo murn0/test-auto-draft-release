@@ -2,7 +2,7 @@ name: check-milestone
 on:
   push:
     paths:
-      - ./.github/workflows/check-milestone.yaml
+      - .github/workflows/check-milestone.yaml
   workflow_dispatch:
     inputs:
       RELEASE_VERSION:
