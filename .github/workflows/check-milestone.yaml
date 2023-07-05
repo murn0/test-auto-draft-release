@@ -71,7 +71,7 @@ jobs:
 
           for pr_number in "${pr_array[@]}"; do
               echo "処理中のPull Request: $pr_number"
-              gh pr edit $pr_number --milestone $RELEASE_VERSION
+              gh pr -R ${{github.repository}} edit $pr_number --milestone $RELEASE_VERSION
           done
         env:
           GITHUB_TOKEN: ${{github.token}}
