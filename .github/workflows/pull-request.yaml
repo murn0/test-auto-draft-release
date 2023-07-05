@@ -1,0 +1,17 @@
+name: Generate release
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+
+permissions: {}
+jobs:
+  pr-add-milestone:
+    runs-on: ubuntu-latest
+    permissions: {}
+    if: |
+      ! github.event.pull_request.user.login == 'renovate[bot]'
+    steps:
+      - run: |
+          echo ${{github.head_ref}}
