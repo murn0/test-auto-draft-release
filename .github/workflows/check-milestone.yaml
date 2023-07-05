@@ -18,6 +18,11 @@ jobs:
     permissions:
       issues: write
     steps:
+      - name: push env
+        id: push-env
+        if: github.event_name == 'push'
+        run: |
+          echo "release_versino=v0.1.0" >> $GITHUB_OUTPUT
       - run: echo ${{github.event_name}}
       - run: cat $GITHUB_EVENT_PATH
       - name: Check to see if milestones exist and create or reopen them
@@ -42,7 +47,7 @@ jobs:
           echo "MILESTONE_NUMBER=$milestone_number" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{github.token}}
-          RELEASE_VERSION: ${{inputs.RELEASE_VERSION}}
+          RELEASE_VERSION: ${{inputs.RELEASE_VERSION || steps.push-env.outputs.release_versino}}
   add-milestone:
     runs-on: ubuntu-latest
     permissions:
