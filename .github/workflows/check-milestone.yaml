@@ -51,7 +51,7 @@ jobs:
   add-milestone:
     runs-on: ubuntu-latest
     permissions:
-      issues: write
+      pull-requests: write
     steps:
       - name: push env
         id: push-env
