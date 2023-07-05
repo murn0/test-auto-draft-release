@@ -10,8 +10,9 @@ jobs:
   pr-add-milestone:
     runs-on: ubuntu-latest
     permissions: {}
-    if: |
-      ! github.event.pull_request.user.login == 'renovate[bot]'
+    # if: |
+    #   ! github.event.pull_request.user.login == 'renovate[bot]'
     steps:
       - run: |
+          cat ${{github.event.pull_request}}
           echo ${{github.head_ref}}
