@@ -18,6 +18,7 @@ jobs:
     permissions:
       issues: write
     steps:
+      - run: echo ${{github.event_name}}
       - run: cat $GITHUB_EVENT_PATH
       - name: Check to see if milestones exist and create or reopen them
         id: milestone
