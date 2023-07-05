@@ -53,6 +53,11 @@ jobs:
     permissions:
       issues: write
     steps:
+      - name: push env
+        id: push-env
+        if: github.event_name == 'push'
+        run: |
+          echo "release_versino=v0.1.0" >> $GITHUB_OUTPUT
       - name: Build Changelog
         id: github_release
         uses: mikepenz/release-changelog-builder-action@v4.0.0-b02
@@ -61,4 +66,13 @@ jobs:
           toTag: ${{ github.ref }}
       - run: |
           pull_requests=${{steps.github_release.outputs.pull_requests}}
-          echo $pull_requests
+          
+          IFS=',' read -ra pr_array <<< "$pull_requests"  # カンマで分割して配列に格納
+
+          for pr_number in "${pr_array[@]}"; do
+              echo "処理中のPull Request: $pr_number"
+              gh pr edit $pr_number --milestone $RELEASE_VERSION
+          done
+        env:
+          GITHUB_TOKEN: ${{github.token}}
+          RELEASE_VERSION: ${{inputs.RELEASE_VERSION || steps.push-env.outputs.release_versino}}
