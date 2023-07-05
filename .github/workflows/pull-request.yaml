@@ -14,5 +14,5 @@ jobs:
     #   ! github.event.pull_request.user.login == 'renovate[bot]'
     steps:
       - run: |
-          cat ${{github.event.pull_request}}
+          echo ${{github.event.pull_request}}
           echo ${{github.head_ref}}
