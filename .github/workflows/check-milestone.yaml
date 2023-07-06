@@ -22,7 +22,7 @@ jobs:
         id: push-env
         if: github.event_name == 'push'
         run: |
-          echo "release_versino=v0.1.0" >> $GITHUB_OUTPUT
+          echo "release_versino=v0.4.0" >> $GITHUB_OUTPUT
       - run: echo ${{github.event_name}}
       - run: cat $GITHUB_EVENT_PATH
       - name: Check to see if milestones exist and create or reopen them
