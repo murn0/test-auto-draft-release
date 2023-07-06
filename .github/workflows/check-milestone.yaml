@@ -65,7 +65,7 @@ jobs:
         id: push-env
         if: github.event_name == 'push'
         run: |
-          echo "release_versino=v0.1.0" >> $GITHUB_OUTPUT
+          echo "release_versino=v0.4.0" >> $GITHUB_OUTPUT
       - name: Build Changelog
         id: github_release
         uses: mikepenz/release-changelog-builder-action@v4.0.0-b02
