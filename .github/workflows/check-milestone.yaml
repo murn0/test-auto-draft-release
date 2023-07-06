@@ -31,6 +31,9 @@ jobs:
           set -eu
 
           milestones=$(gh api -X GET /repos/${{github.repository}}/milestones -f state=all)
+
+          echo $("${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\")")
+
           #=> $RELEASE_VERSIONと同じタイトルのマイルストーンが存在しない場合は作成する
           if ! echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\")"; then
             echo "存在しない"
