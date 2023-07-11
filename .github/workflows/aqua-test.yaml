@@ -23,6 +23,7 @@ jobs:
         #   AQUA_CONFIG: .github/aqua/ci.yaml
       - run: |
           pwd
+          ls -la
           echo $AQUA_CONFIG
           ghcp -v
           ghalint -v
