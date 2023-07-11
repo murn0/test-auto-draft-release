@@ -5,9 +5,11 @@ on:
     paths:
       - .github/workflows/aqua-test.yaml
 
-env:
-  AQUA_CONFIG: .github/aqua/ci.yaml
-
+# env:
+#   AQUA_CONFIG: .github/aqua/ci.yaml
+defaults:
+  run:
+    working-directory: .github/
 permissions: {}
 jobs:
   job1:
@@ -20,6 +22,7 @@ jobs:
         # env:
         #   AQUA_CONFIG: .github/aqua/ci.yaml
       - run: |
+          pwd
           echo $AQUA_CONFIG
           ghcp -v
           ghalint -v
