@@ -1,0 +1,41 @@
+name: Generate release
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+
+permissions: {}
+jobs:
+  pr-add-label:
+    runs-on: ubuntu-latest
+    permissions: {}
+    if: |
+      github.event.pull_request.user.login != 'renovate[bot]'
+    steps:
+      - name: Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@b62528385c34dbc9f38e5f4225ac829252d1ea92 # v1.8.0
+        with:
+          app_id: ${{secrets.gh_app_id}}
+          private_key: ${{secrets.gh_app_private_key}}
+      - run: |
+          echo ${{github.event.pull_request.user.login}}
+          echo ${{github.head_ref}}
+          head_ref=${{github.head_ref}}
+          if [[ $head_ref == *"feat"* ]]; then
+            echo "文字列に 'feat' が含まれています。"
+            gh -R "$GITHUB_REPOSITORY" pr edit "$PR_NUMBER" --add-label "feature"
+          elif [[ $head_ref == *"fix"* ]]; then
+            echo "文字列に 'fix' が含まれています。"
+            gh -R "$GITHUB_REPOSITORY" pr edit "$PR_NUMBER" --add-label "fix"
+          elif [[ $head_ref == *"test"* ]]; then
+            echo "文字列に 'test' が含まれています。"
+            gh -R "$GITHUB_REPOSITORY" pr edit "$PR_NUMBER" --add-label "test"
+          elif [[ $head_ref == *"doc"* ]]; then
+            echo "文字列に 'doc' が含まれています。"
+            gh -R "$GITHUB_REPOSITORY" pr edit "$PR_NUMBER" --add-label "documentation"
+          fi
+        env:
+          GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
+          PR_NUMBER: ${{github.event.pull_request.number}}
