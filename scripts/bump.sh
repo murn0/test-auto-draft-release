@@ -7,9 +7,9 @@ search_features="## 🚀 Features"
 search_breaking_changes="## ⚠️ Breaking Changes"
 
 if [[ "$markdown_text" == *"$search_features"* ]]; then
-    echo "minor"
+    echo "minor update"
 elif [[ "$markdown_text" == *"$search_breaking_changes"* ]]; then
-    echo "major"
+    echo "major update"
 else
-    echo "patch"
+    echo "patch update"
 fi
